@@ -1,0 +1,2 @@
+variable_name   local_path (relative)	remote_path (absolute)	md5sum	size	notes
+chrM	hg38/hg38.chrom.interval.chrM.bed.gz	hg38/hg38.chrom.interval.chrM.bed.gz	V3ThYH7aXwtGMdEvYCOmRQ==	79	#old path: /home/yaping/data/intervals/hg38.chrom.interval.chrM.bed.gz
