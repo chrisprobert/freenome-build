@@ -1,0 +1,2 @@
+conda==4.3.16
+conda-build==2.1.5
