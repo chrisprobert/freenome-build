@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import re
@@ -28,7 +29,7 @@ def setup_development_environment(path='./', environment_name=None):
     assert False
 
 
-def environment_build_and_upload(path='./', upload=True):
+def repo_build_and_upload(path='./', upload=True):
     # Set the environment variable VERSION so that
     # the jinja2 templating works for the conda-build
     repo_name = os.path.basename(
@@ -70,12 +71,25 @@ def environment_build_and_upload(path='./', upload=True):
         output = subprocess.check_output(upload_cmd)
 
 
-def main():
-    if sys.argv[1] == 'develop':
+def main(args):
+    if args.cmd == 'develop':
         setup_development_environment()
 
-    elif sys.argv[1] == 'deploy':
-        environment_build_and_upload()
+    elif args.cmd == 'deploy':
+        repo_build_and_upload(path=args.path,
+                              upload=args.upload)
+
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser('Freenome build manager')
+    parser.add_argument('cmd', type='str', help='Command  to run', dest='cmd')
+
+    deploy_args = parser.add_argument_group()
+    deploy_args.add_argument('-u', '--upload', action='store_true', default=False,
+                             dest='upload')
+    deploy_args.add_argument('-p', '--path', action='store', default='./',
+                             dest='path')
+
+    args = parser.parse_args()
+
+    main(args)
