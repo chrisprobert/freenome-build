@@ -82,7 +82,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Freenome build manager')
-    parser.add_argument('cmd', type='str', help='Command  to run', dest='cmd')
+    parser.add_argument('cmd', type=str, help='Command to run')
 
     deploy_args = parser.add_argument_group()
     deploy_args.add_argument('-u', '--upload', action='store_true', default=False,

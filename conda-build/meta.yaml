@@ -11,6 +11,12 @@ requirements:
     - conda-build
     - conda-verify
 
+  run:
+    - conda
+    - conda-build
+    - conda-verify
+
+
 channels:
   - bioconda
   - conda-forge
