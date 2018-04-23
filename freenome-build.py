@@ -28,11 +28,16 @@ def setup_development_environment(path='./', environment_name=None):
     assert False
 
 
-
 def environment_build_and_upload(path='./', upload=True):
     # Set the environment variable VERSION so that
     # the jinja2 templating works for the conda-build
-    with open('lims_api/__init__.py', 'r') as fp:
+    repo_name = os.path.basename(
+        subprocess.run(
+            'git rev-parse --show-toplevel',
+            shell=True,
+            stdout=subprocess.PIPE
+        ).stdout.strip().decode('utf8')).lower().replace('-', '_')
+    with open('{}/__init__.py'.format(repo_name), 'r') as fp:
         version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                             fp.read(), re.MULTILINE).group(1)
     local_env = os.environ
@@ -56,6 +61,9 @@ def environment_build_and_upload(path='./', upload=True):
 def main():
     if sys.argv[1] == 'develop':
         setup_development_environment()
+
+    elif sys.argv[1] == 'deploy':
+        environment_build_and_upload()
 
 if __name__ == '__main__':
     main()
