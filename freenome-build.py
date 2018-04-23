@@ -60,7 +60,7 @@ def environment_build_and_upload(path='./', upload=True):
 
     output_file_paths = conda_build.api.build(
         [yaml_fpath,],
-        skip_existing=False
+        skip_existing=True
     )
 
     if upload:

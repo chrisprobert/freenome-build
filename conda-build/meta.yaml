@@ -6,8 +6,10 @@ source:
   git_url: ..
 
 requirements:
-  - conda
-  - conda-build
+  build:
+    - conda
+    - conda-build
+    - conda-verify
 
 channels:
   - bioconda
