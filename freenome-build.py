@@ -40,13 +40,13 @@ def repo_build_and_upload(path='./', upload=True):
         ).stdout.strip().decode('utf8')).lower().replace('-', '_')
 
     repo_init_filepath = os.path.abspath('{}/__init__.py'.format(repo_name))
-    version_filepath = os.path.abspath('./VERSION'.format(repo_name))
+    version_filepath = os.path.abspath('./VERSION')
 
     if os.path.exists(repo_init_filepath):
         with open(repo_init_filepath, 'r') as fp:
             version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                                 fp.read(), re.MULTILINE).group(1)
-    elif version_filepath:
+    elif os.path.exists(version_filepath):
         with open(version_filepath, 'r') as fp:
             version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                                 fp.read(), re.MULTILINE).group(1)
