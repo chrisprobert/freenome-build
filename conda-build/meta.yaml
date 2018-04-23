@@ -1,0 +1,15 @@
+package:
+  name: freenome-build
+  version: {{ VERSION }}
+
+source:
+  git_url: ..
+
+requirements:
+  - conda
+  - conda-build
+
+channels:
+  - bioconda
+  - conda-forge
+  - freenome
