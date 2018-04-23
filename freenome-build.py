@@ -37,9 +37,21 @@ def environment_build_and_upload(path='./', upload=True):
             shell=True,
             stdout=subprocess.PIPE
         ).stdout.strip().decode('utf8')).lower().replace('-', '_')
-    with open('{}/__init__.py'.format(repo_name), 'r') as fp:
-        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                            fp.read(), re.MULTILINE).group(1)
+
+    repo_init_filepath = os.path.abspath('{}/__init__.py'.format(repo_name))
+    version_filepath = os.path.abspath('./VERSION'.format(repo_name))
+
+    if os.path.exists(repo_init_filepath):
+        with open(repo_init_filepath, 'r') as fp:
+            version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                                fp.read(), re.MULTILINE).group(1)
+    elif version_filepath:
+        with open(version_filepath, 'r') as fp:
+            version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                                fp.read(), re.MULTILINE).group(1)
+    else:
+        raise FileNotFoundError('Version file cannot be found.')
+
     local_env = os.environ
     local_env['VERSION'] = version
 
