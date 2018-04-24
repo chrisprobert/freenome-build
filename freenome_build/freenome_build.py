@@ -80,7 +80,7 @@ def main(args):
                               upload=args.upload)
 
 
-if __name__ == '__main__':
+def parse_args():
     parser = argparse.ArgumentParser('Freenome build manager')
     parser.add_argument('cmd', type=str, help='Command to run')
 
@@ -92,4 +92,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    return args
+
+
+if __name__ == '__main__':
+    args = parse_args()
     main(args)
