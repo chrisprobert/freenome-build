@@ -32,7 +32,19 @@ def setup_development_environment(path='./', environment_name=None):
     assert False
 
 
-def repo_build_and_upload(path='./', upload=True):
+def repo_build_and_upload(path='./', upload=True, skip_existing=False):
+    """
+
+    Args:
+        path: library path to install (default './')
+        upload: upload to freenome conda channel (default True)
+        skip_existing: do not build if existing build in local conda install (default False)
+
+    Returns:
+        None
+
+    """
+
     # Set the environment variable VERSION so that
     # the jinja2 templating works for the conda-build
     repo_name = os.path.basename(
@@ -74,7 +86,7 @@ def repo_build_and_upload(path='./', upload=True):
 
     output_file_paths = conda_build.api.build(
         [yaml_fpath,],
-        skip_existing=True
+        skip_existing=skip_existing
     )
 
     if upload:
@@ -95,7 +107,8 @@ def main():
 
     elif args.cmd == 'deploy':
         repo_build_and_upload(path=args.path,
-                              upload=args.upload)
+                              upload=args.upload,
+                              skip_existing=args.skip_existing)
 
 
 def parse_args():
@@ -109,6 +122,8 @@ def parse_args():
                              dest='path')
     deploy_args.add_argument('--debug', action='store_true', default=False,
                              dest='debug')
+    deploy_args.add_argument('--skip', action='store_true', default=False,
+                             dest='skip_existing')
 
     args = parser.parse_args()
 
