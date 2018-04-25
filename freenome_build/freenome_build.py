@@ -1,10 +1,13 @@
 import argparse
+import logging
 import os
 import sys
 import re
 import subprocess
 import conda
 import conda_build.api
+
+logging.basicConfig(stream=sys.stderr, format='%(levelname)s\t%(asctime)-15s\t%(message)s')
 
 def setup_development_environment(path='./', environment_name=None):
     # set the default environment name
@@ -42,16 +45,26 @@ def repo_build_and_upload(path='./', upload=True):
     repo_init_filepath = os.path.abspath('{}/__init__.py'.format(repo_name))
     version_filepath = os.path.abspath('./VERSION')
 
+    logging.debug('repo_init_filepath: {}'.format(repo_init_filepath))
+    logging.debug('version_filepath: {}'.format(version_filepath))
+
     if os.path.exists(repo_init_filepath):
         with open(repo_init_filepath, 'r') as fp:
-            version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                                fp.read(), re.MULTILINE).group(1)
-    elif os.path.exists(version_filepath):
+            search = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                               fp.read(), re.MULTILINE)
+            version = search.group(1) if search is not None else None
+
+    if os.path.exists(version_filepath):
         with open(version_filepath, 'r') as fp:
-            version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                                fp.read(), re.MULTILINE).group(1)
-    else:
+            search = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                               fp.read(), re.MULTILINE)
+            version = search.group(1) if search is not None else None
+
+    if not version:
         raise FileNotFoundError('Version file cannot be found.')
+
+
+    logging.debug('version: {}'.format(version))
 
     local_env = os.environ
     local_env['VERSION'] = version
@@ -73,6 +86,10 @@ def repo_build_and_upload(path='./', upload=True):
 
 def main():
     args = parse_args()
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+
     if args.cmd == 'develop':
         setup_development_environment()
 
@@ -90,6 +107,8 @@ def parse_args():
                              dest='upload')
     deploy_args.add_argument('-p', '--path', action='store', default='./',
                              dest='path')
+    deploy_args.add_argument('--debug', action='store_true', default=False,
+                             dest='debug')
 
     args = parser.parse_args()
 
