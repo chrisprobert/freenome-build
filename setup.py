@@ -1,3 +1,5 @@
+from pip.download import PipSession
+from pip.req import parse_requirements
 import os
 import re
 from setuptools import setup, find_packages
@@ -11,11 +13,17 @@ with open(version_filepath, 'r') as fp:
 if not version:
     raise RuntimeError('Cannot find version information')
 
+install_reqs = parse_requirements("update_requirements.txt", session=PipSession())
+reqs = [str(ir.req) for ir in install_reqs if ir.req]
+
 setup(name='freenome-build',
       version=version,
-      author='Nathan Boley',
-      author_email='nathan.boley@freenome.com',
-      description='',
-      py_modules=['freenome_build'],
-      install_requires=['conda>=4.3.16', 'conda-build>=2.1.5'],
-      packages=find_packages())
+      description='Freenome build',
+      install_requires=install_reqs,
+      include_package_data=True,
+      packages=find_packages(),
+      entry_points={
+          'console_scripts': [
+              'freenome_build = freenome_build.freenome_build:main'
+          ]
+      })

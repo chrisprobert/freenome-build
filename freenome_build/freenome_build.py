@@ -71,7 +71,8 @@ def repo_build_and_upload(path='./', upload=True):
         output = subprocess.check_output(upload_cmd)
 
 
-def main(args):
+def main():
+    args = parse_args()
     if args.cmd == 'develop':
         setup_development_environment()
 
@@ -96,5 +97,4 @@ def parse_args():
 
 
 if __name__ == '__main__':
-    args = parse_args()
-    main(args)
+    main()
