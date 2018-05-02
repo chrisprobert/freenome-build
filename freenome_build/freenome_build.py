@@ -62,7 +62,6 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False,
         [yaml_fpath,],
         skip_existing=skip_existing
     )
-
     assert len(output_file_paths) == 1, "multiple file paths in conda build"
 
     if upload:
