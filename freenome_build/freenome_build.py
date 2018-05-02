@@ -7,16 +7,15 @@ import subprocess
 import conda
 import conda_build.api
 
+from freenome_build import github
+from freenome_build import version_utils
+
 logging.basicConfig(stream=sys.stderr, format='%(levelname)s\t%(asctime)-15s\t%(message)s')
 
 def setup_development_environment(path='./', environment_name=None):
     # set the default environment name
     if environment_name is None:
-        environment_name = subprocess.run(
-            'git describe --all HEAD^',
-            shell=True,
-            stdout=subprocess.PIPE
-        ).stdout.strip().decode('utf8').replace('/', '__')
+        environment_name = github.environment_name()
 
     # build the package.
     # ( we need to do this to install the dependencies -- which is super hacky but required
@@ -32,7 +31,9 @@ def setup_development_environment(path='./', environment_name=None):
     assert False
 
 
-def repo_build_and_upload(path='./', upload=True, skip_existing=False):
+
+def repo_build_and_upload(path='./', upload=True, skip_existing=False,
+                          repo_name=None)
     """
 
     Args:
@@ -47,35 +48,7 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False):
 
     # Set the environment variable VERSION so that
     # the jinja2 templating works for the conda-build
-    repo_name = os.path.basename(
-        subprocess.run(
-            'git rev-parse --show-toplevel',
-            shell=True,
-            stdout=subprocess.PIPE
-        ).stdout.strip().decode('utf8')).lower().replace('-', '_')
-
-    repo_init_filepath = os.path.abspath('{}/__init__.py'.format(repo_name))
-    version_filepath = os.path.abspath('./VERSION')
-
-    logging.debug('repo_init_filepath: {}'.format(repo_init_filepath))
-    logging.debug('version_filepath: {}'.format(version_filepath))
-
-    if os.path.exists(repo_init_filepath):
-        with open(repo_init_filepath, 'r') as fp:
-            search = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                               fp.read(), re.MULTILINE)
-            version = search.group(1) if search is not None else None
-
-    if os.path.exists(version_filepath):
-        with open(version_filepath, 'r') as fp:
-            search = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                               fp.read(), re.MULTILINE)
-            version = search.group(1) if search is not None else None
-
-    if not version:
-        raise FileNotFoundError('Version file cannot be found.')
-
-
+    version = version_utils.version(repo_name=repo_name)
     logging.debug('version: {}'.format(version))
 
     local_env = os.environ
@@ -89,11 +62,13 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False):
         skip_existing=skip_existing
     )
 
+    assert len(output_file_paths) == 1, "multiple file paths in conda build"
+
     if upload:
         upload_cmd = ['anaconda', '-t', local_env['ANACONDA_TOKEN'],
                       'upload', '-u', 'freenome', output_file_paths[0]]
 
-        output = subprocess.check_output(upload_cmd)
+        subprocess.check_call(upload_cmd)
 
 
 def main():
@@ -112,6 +87,11 @@ def main():
 
 
 def parse_args():
+    """build and parse args for freenome-build
+
+    Returns:
+        parsed args
+    """
     parser = argparse.ArgumentParser('Freenome build manager')
     parser.add_argument('cmd', type=str, help='Command to run')
 
