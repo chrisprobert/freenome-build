@@ -7,6 +7,7 @@ from setuptools import setup, find_packages
 version_filepath = os.path.abspath('./VERSION')
 
 with open(version_filepath, 'r') as fp:
+    # returns string following "__version__ = "
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fp.read(), re.MULTILINE).group(1)
 
