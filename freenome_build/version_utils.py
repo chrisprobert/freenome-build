@@ -25,7 +25,7 @@ def version(repo_name=None):
 
     if version_from_init:
         return version_from_init
-    elif version_from_version_file
+    elif version_from_version_file:
         return version_from_version_file
     else:
         raise FileNotFoundError("Version file cannot be found.")
