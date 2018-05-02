@@ -33,13 +33,14 @@ def setup_development_environment(path='./', environment_name=None):
 
 
 def repo_build_and_upload(path='./', upload=True, skip_existing=False,
-                          repo_name=None)
+                          repo_name=None):
     """
 
     Args:
-        path: library path to install (default './')
-        upload: upload to freenome conda channel (default True)
-        skip_existing: do not build if existing build in local conda install (default False)
+        path (str): library path to install (default './')
+        upload (bool): upload to freenome conda channel (default True)
+        skip_existing (bool): do not build if existing build in local conda install (default False)
+        repo_name (str): repo name to build (optional)
 
     Returns:
         None
