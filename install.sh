@@ -1,3 +1,7 @@
+#!/bin/bash
+
+PYTHON_VERSION=3.6
+
 # install miniconda
 MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 MINICONDA_INSTALL_PATH=$HOME/miniconda
@@ -20,8 +24,13 @@ if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
 fi
 
+conda create -n conda_env python=$PYTHON_VERSION
+conda activate conda_env
+
 # install conda in the base environment
 conda install conda --yes
 conda install conda-verify --yes
 conda install conda-build --yes
 conda install anaconda --yes
+
+python setup.py install
