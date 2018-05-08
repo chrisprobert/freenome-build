@@ -21,7 +21,7 @@ def version(repo_name=None):
     version_from_version_file = get_version_from_version_file()
 
     assert version_from_init or version_from_version_file, "Version file cannot be found"
-    assert version_from_init ^ version_from_version_file, "Multiple version files found"
+    assert (version_from_init is not None) ^ (version_from_version_file is not None), "Multiple version files found"
 
     if version_from_init:
         return version_from_init
