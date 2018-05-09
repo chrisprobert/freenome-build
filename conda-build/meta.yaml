@@ -20,3 +20,7 @@ channels:
   - bioconda
   - conda-forge
   - freenome
+
+build:
+  entry_points:
+    - freenome_build = freenome_build.freenome_build:main
