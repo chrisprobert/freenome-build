@@ -65,8 +65,8 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False,
     assert len(output_file_paths) == 1, "multiple file paths in conda build"
 
     if upload:
-        upload_cmd = ['anaconda', '-t', local_env['ANACONDA_TOKEN'], '--force',
-                      'upload', '-u', 'freenome', output_file_paths[0]]
+        upload_cmd = ['anaconda', '-t', local_env['ANACONDA_TOKEN'],
+                      'upload', '--force', '-u', 'freenome', output_file_paths[0]]
 
         subprocess.check_call(upload_cmd, stdout=sys.stdout, stderr=sys.stderr)
 
