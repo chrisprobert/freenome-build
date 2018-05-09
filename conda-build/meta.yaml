@@ -7,6 +7,7 @@ source:
 
 requirements:
   build:
+    - python {{PY_VER}}*
     - conda
     - conda-build
     - conda-verify
