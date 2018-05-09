@@ -10,6 +10,7 @@ requirements:
     - conda
     - conda-build
     - conda-verify
+    - setuptools
 
   run:
     - conda
@@ -24,3 +25,4 @@ channels:
 build:
   entry_points:
     - freenome_build = freenome_build.freenome_build:main
+  preserve_egg_dir: True
