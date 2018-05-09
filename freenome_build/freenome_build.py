@@ -22,7 +22,7 @@ def setup_development_environment(path='./', environment_name=None):
     #   because of the jinja templating -- see https://github.com/conda/conda/issues/5126   )
     yaml_fpath = os.path.normpath(os.path.abspath(os.path.join(path, "conda-build/meta.yaml")))
     if not os.path.exists(yaml_fpath):
-        raise ValueError(f"Could not find a yaml file at '{yaml_fpath}'")
+        raise ValueError("Could not find a yaml file at '{}'".format(yaml_fpath))
     output_file_paths = conda_build.api.build(
         [yaml_fpath,],
         skip_existing=True
