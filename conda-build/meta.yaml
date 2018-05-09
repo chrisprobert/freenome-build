@@ -13,6 +13,7 @@ requirements:
     - setuptools
 
   run:
+    - python
     - conda
     - conda-build
     - conda-verify
@@ -23,6 +24,6 @@ channels:
   - freenome
 
 build:
+  script: python setup.py install --single-version-externally-managed --record=record.txt
   entry_points:
-    - freenome_build = freenome_build:main
-  preserve_egg_dir: True
+    - freenome_build = freenome_build.freenome_build:main
