@@ -16,7 +16,6 @@ requirements:
     - conda-build
     - conda-verify
 
-
 channels:
   - bioconda
   - conda-forge

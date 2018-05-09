@@ -68,7 +68,8 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False,
         upload_cmd = ['anaconda', '-t', local_env['ANACONDA_TOKEN'],
                       'upload', '-u', 'freenome', output_file_paths[0]]
 
-        subprocess.check_call(upload_cmd)
+        subprocess.check_call(upload_cmd, stdout=sys.stdout, stderr=sys.stderr)
+
 
 
 def main():
@@ -84,6 +85,8 @@ def main():
         repo_build_and_upload(path=args.path,
                               upload=args.upload,
                               skip_existing=args.skip_existing)
+    else:
+        raise Exception('Unknown command: {}.'.format(args.cmd))
 
 
 def parse_args():
