@@ -11,7 +11,7 @@ from freenome_build.constants import GCS_CONDA_BUILD_SCRIPT_URL
 from freenome_build import github
 from freenome_build import version_utils
 
-LOCAL_CONDA_BUILD_SCRIPT = os.path.abspath('../scripts/conda_build.sh')
+LOCAL_CONDA_BUILD_SCRIPT = os.path.abspath('scripts/conda_build.sh')
 
 logging.basicConfig(stream=sys.stderr, format='%(levelname)s\t%(asctime)-15s\t%(message)s')
 
