@@ -55,7 +55,9 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False,
 
     # upload conda_build.sh to GCS whenever freenome_build is built and uploaded to conda
     if repo_name == 'freenome_build':
+        logging.info('Copying conda_build script to GCS.')
         cp_cmd = ['gsutil', 'cp', LOCAL_CONDA_BUILD_SCRIPT, GCS_CONDA_BUILD_SCRIPT_URL]
+        logging.info('COPY CMD: {}'.format(cp_cmd))
         subprocess.check_call(cp_cmd, stdout=sys.stdout, stderr=sys.stderr)
 
 
