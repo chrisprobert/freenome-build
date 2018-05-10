@@ -2,8 +2,6 @@ import logging
 import os
 import re
 
-from freenome_build import github
-
 
 def version(repo_name=None):
     """Return version id
@@ -15,7 +13,7 @@ def version(repo_name=None):
         (str): version id
     """
     if repo_name is None:
-        repo_name = github.repo_name()
+        raise Exception('repo name must be passed')
 
     version_from_init = get_version_from_init(repo_name)
     version_from_version_file = get_version_from_version_file()
