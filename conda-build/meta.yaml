@@ -27,4 +27,4 @@ channels:
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   entry_points:
-    - freenome_build = freenome_build.freenome_build:main
+    - freenome-build = freenome_build.freenome_build:main

@@ -29,7 +29,7 @@ def main():
           packages=find_packages(),
           entry_points={
               'console_scripts': [
-                  'freenome_build = freenome_build.freenome_build:main'
+                  'freenome-build = freenome_build.freenome_build:main'
               ]
           })
 
