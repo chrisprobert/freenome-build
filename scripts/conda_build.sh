@@ -1,8 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-PYTHON_VERSION=3.6
-
-# install miniconda
+ANACONDA_TOKEN=$1
 MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 MINICONDA_INSTALL_PATH=$HOME/miniconda
 
@@ -24,13 +22,27 @@ if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
 fi
 
-conda create -n conda_env python=$PYTHON_VERSION
-conda activate conda_env
+# create a conda build environment
+conda create -n freenome_conda_build python=$TRAVIS_PYTHON_VERSION --yes
+source activate freenome_conda_build
 
-# install conda in the base environment
+# install conda packages needed for upload
 conda install conda --yes
 conda install conda-verify --yes
 conda install conda-build --yes
 conda install anaconda --yes
 
-python setup.py install
+# enable access to freenome channel
+conda config --add channels https://conda.anaconda.org/t/$ANACONDA_TOKEN/freenome
+
+# install freenome-build
+conda install freenome-build --yes
+
+# output conda info for debugging
+conda config --set anaconda_upload no
+conda info -a
+
+# build lims_api and upload to conda
+freenome_build deploy -u -p .
+
+echo "conda build and upload success."
