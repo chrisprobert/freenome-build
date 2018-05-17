@@ -1,0 +1,8 @@
+[flake8]
+exclude =
+    .git,
+    configs, 
+    docs,
+    env,
+    scripts
+max-line-length = 120
