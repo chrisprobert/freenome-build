@@ -53,14 +53,6 @@ def repo_build_and_upload(path='./', upload=True, skip_existing=False,
     if repo_name is None:
         repo_name = github.repo_name()
 
-    # upload conda_build.sh to GCS whenever freenome_build is built and uploaded to conda
-    if repo_name == 'freenome_build':
-        logging.info('Copying conda_build script to GCS.')
-        cp_cmd = ['gsutil', 'cp', LOCAL_CONDA_BUILD_SCRIPT, GCS_CONDA_BUILD_SCRIPT_URL]
-        logging.info('COPY CMD: {}'.format(cp_cmd))
-        subprocess.check_call(cp_cmd, stdout=sys.stdout, stderr=sys.stderr)
-
-
     # Set the environment variable VERSION so that
     # the jinja2 templating works for the conda-build
     version = version_utils.version(repo_name=repo_name)
