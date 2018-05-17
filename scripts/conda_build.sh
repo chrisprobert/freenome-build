@@ -32,6 +32,10 @@ conda install conda-verify --yes
 conda install conda-build --yes
 conda install anaconda --yes
 
+# add default channels
+conda config --add channels conda-forge
+conda config --add channels bioconda
+
 # enable access to freenome channel
 conda config --add channels https://conda.anaconda.org/t/$ANACONDA_TOKEN/freenome
 
