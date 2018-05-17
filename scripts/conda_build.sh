@@ -26,15 +26,15 @@ fi
 conda create -n freenome_conda_build python=$TRAVIS_PYTHON_VERSION --yes
 source activate freenome_conda_build
 
+# add default channels
+conda config --add channels conda-forge
+conda config --add channels bioconda
+
 # install conda packages needed for upload
 conda install conda --yes
 conda install conda-verify --yes
 conda install conda-build --yes
-conda install anaconda --yes
-
-# add default channels
-conda config --add channels conda-forge
-conda config --add channels bioconda
+conda install anaconda-client --yes
 
 # enable access to freenome channel
 conda config --add channels https://conda.anaconda.org/t/$ANACONDA_TOKEN/freenome
