@@ -1,11 +1,25 @@
 language: python
 python:
-  - 3.6
+- 3.6
 dist: trusty
 sudo: false
 install:
-  - pip3 install -r update_requirements.txt
-  - pip3 install -r requirements.txt
+- pip3 install -r update_requirements.txt
+- pip3 install -r requirements.txt
 cache: pip
 script:
-  - flake8 .
+- flake8 .
+branches:
+  only:
+  - master
+  - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
+deploy:
+  provider: script
+  script:
+  - bash scripts/conda_build.sh $ANACONDA_TOKEN
+  skip_cleanup: true
+  on:
+    tags: true
+env:
+  global:
+    secure: fc0se2Hw0OC2Ws5IF/eSYqaVQZNDMHQu2HQeqmgMZtf1vDO71zJiI9OQtrDOPwQA0vqV7S2tBVDZIs0A/32todp42DNFYUTtrJWRmsqa3JwtMz6RGdSCF7xGeC01kawWj9FLARhHqBdtRCpq40fHfcjn/87c2/yQxqUCrElQ5acu7f2iN92tyjHB3byRvjXK+RXPn4gUeryKtehpMsq6K9ndP5EN3YQdHijkzeT0p2TxfgupJjSdxYDlcLwWkyIBZv975pZW0fBl2AITm7Ih7hFcE071vACveWtR/HYaZqsS29yC8yNXwvBwqTthvPHr4d9B0GKSm1IqArxThWIUkdvkwBgTmPwESjMzHd+Z9L/BHMOMbslp3U+0Uz2ZO8tAUPRXYaeMXsyII/8bL6SuyCHCKvTo3BAiTUktwGgJkl/LmtqXpvBYNhqPL45U2/56T1TQXvp2Rk4s4vfj+INRKJ66VFHF1Osq5kuIw28NdY/TSbhK+RO8sfgQTQj72TVdtvkuj0eAFysCc7f9k1YEyRYwNlO+vhZSWBgrOhuSLvcTUt6ELyOvCDK6D9i7eepAw7hRNVfCOjCYBXXYvXjkeLuw3tGgTYqFg45s3OxemieC0FQAnOYzj0z9cEeFJezKysDXEQXuJ9I6u3SEvq0ZmukPSjzbibB/41NI7XFWc/s=
