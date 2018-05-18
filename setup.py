@@ -20,11 +20,12 @@ def get_version():
 def main():
     version = get_version()
     install_reqs = parse_requirements("update_requirements.txt", session=PipSession())
+    reqs = [str(ir.req) for ir in install_reqs if ir.req]
 
     setup(name='freenome-build',
           version=version,
           description='Freenome build',
-          install_requires=install_reqs,
+          install_requires=reqs,
           include_package_data=True,
           packages=find_packages(),
           entry_points={
