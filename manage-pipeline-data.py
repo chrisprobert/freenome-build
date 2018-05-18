@@ -81,7 +81,10 @@ class DataManifest(OrderedDict):
             # first make sure that the manifest hasn't changed since we last read it
             on_disk_md5sum = calc_md5sum_from_fp(fp)
             if on_disk_md5sum != self._md5sum:
-                raise RuntimeError(f"'{self.fname}' was modified by another program (current md5sum '{on_disk_md5sum}' vs '{self._md5sum}')")
+                raise RuntimeError(
+                    f"'{self.fname}' was modified by another program (current md5sum "
+                    f"'{on_disk_md5sum}' vs '{self._md5sum}')"
+                )
 
             # truncate the file, and re-write it
             fp.seek(0)
@@ -150,7 +153,7 @@ class DataManifest(OrderedDict):
             raise KeyAlreadyExistsError("'{record.name}' is duplicated in '{self.fname}'")
 
         # make sure that we can open the file that we want to add for reading
-        with open(fname) as _:
+        with open(fname) as _: # noqa
             pass
 
         # find the file's file size and calculate the checksum
@@ -166,7 +169,10 @@ class DataManifest(OrderedDict):
             blob.reload()
             # if it exists, make sure that it is the same as the local file
             if local_md5sum != blob.md5_hash:
-                raise FileAlreadyExistsError(f"File '{self.remote_prefix}{remote_relative_path}' already exists with md5sum '{blob.md5_hash}' vs '{local_md5sum}' for '{fname}')")
+                raise FileAlreadyExistsError(
+                    f"File '{self.remote_prefix}{remote_relative_path}' already exists with md5sum"
+                    f"'{blob.md5_hash}' vs '{local_md5sum}' for '{fname}')"
+                )
             if local_fsize != blob.size:
                 raise FileAlreadyExistsError(
                     f"File '{self.remote_prefix}{remote_relative_path}' already exists with file "
@@ -234,7 +240,7 @@ class DataManifest(OrderedDict):
                 os.path.getsize(local_abs_path), record.size
             )
             # skip this assert because it is slow (and filesize should catch anything weird)
-            ## assert calc_md5sum(local_path) == local_md5sum
+            # assert calc_md5sum(local_path) == local_md5sum
 
     def sync(self, local_prefix):
         """Sync the remote files to a local path."""
@@ -255,6 +261,8 @@ class DataManifest(OrderedDict):
 def _add_base_to_path(rel_path):
     return os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), rel_path))
 
+
+LOCAL_TEST_DATA_PREFIX = "PLACEHOLDER FOR FLAKE8 BUT NEEDS TO BE FIXED"
 
 TEST_MANIFEST_FNAME = _add_base_to_path('../tests/data/pipeline-data/data-manifest.tsv')
 TEST_DATA_FILE = _add_base_to_path('../tests/data/pipeline-data/eight_As.fa')
@@ -282,7 +290,6 @@ def add_file_to_manifest_and_verify():
     # TODO - revert these to static global variables
     manifest_fname = TEST_MANIFEST_FNAME
     remote_prefix = DEFAULT_REMOTE_PREFIX
-    local_prefix = LOCAL_TEST_DATA_PREFIX
     test_data_fname = TEST_DATA_FILE
     local_relative_path = TEST_LOCAL_RELATIVE_PATH
     remote_relative_path = TEST_REMOTE_RELATIVE_PATH
@@ -314,14 +321,14 @@ def test_add_duplicate_key():
     # test that we get an error if we try to add this file again with the same key
     try:
         manifest = DataManifest(TEST_MANIFEST_FNAME, DEFAULT_REMOTE_PREFIX)
-        manifest.add_file('eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
-        manifest.add_file('eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
-    # this is what we expect
+        manifest.add_file(
+            'eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
+        manifest.add_file(
+            'eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
+    # this is what we expect. Any other exception will be propogated.
     except KeyAlreadyExistsError:
         pass
-    # any other exception is unexpected
-    except:
-        raise
+
     # no expection is enexpected
     else:
         assert False, "Expected to see a 'KeyAlreadyExistsError'"
@@ -342,6 +349,7 @@ def test_add_remote_present_file():
     blob.upload_from_filename(TEST_DATA_FILE)
     add_file_to_manifest_and_verify()
 
+
 def test_add_remote_mismatch_file():
     """Test adding a file that exists in gcs but does not match the file being added."""
     # add a mismatched file and ensure that we get an error
@@ -354,6 +362,7 @@ def test_add_remote_mismatch_file():
         pass
     else:
         assert False, "This should have failed due to a file mismatch."
+
 
 def test_locking_works():
     """Make sure that we get an error if two people try to modify the same process."""
@@ -382,6 +391,7 @@ def test_locking_works():
         print(f"Deleting remote file ({remote_relative_path})")
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
 
+
 def test_adding_two_files_works():
     try:
         test_data_fname = TEST_DATA_FILE
@@ -392,17 +402,20 @@ def test_adding_two_files_works():
         print(f"Adding file 1 to manifest.")
         manifest.add_file('eight_As', test_data_fname, local_relative_path, remote_relative_path)
         print(f"Adding file 2 to manifest.")
-        manifest.add_file('eight_As_v2', test_data_fname, local_relative_path+'.v2', remote_relative_path+'.v2')
+        manifest.add_file(
+            'eight_As_v2', test_data_fname, local_relative_path+'.v2', remote_relative_path+'.v2')
     finally:
         reset_test_manifest()
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
+
 
 def test_removing_file_works():
     try:
         print(f"Loading manifest: {TEST_MANIFEST_FNAME}")
         manifest = DataManifest(TEST_MANIFEST_FNAME, remote_prefix=DEFAULT_REMOTE_PREFIX)
         print(f"Adding file to manifest.")
-        manifest.add_file('eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
+        manifest.add_file(
+            'eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
         # make sure that the file is in the manifest
         manifest_2 = DataManifest(TEST_MANIFEST_FNAME, remote_prefix=DEFAULT_REMOTE_PREFIX)
         assert 'eight_As' in manifest_2
@@ -413,6 +426,7 @@ def test_removing_file_works():
     finally:
         reset_test_manifest()
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
+
 
 def test_sync():
     try:
@@ -428,6 +442,7 @@ def test_sync():
         shutil.rmtree(local_test_data_prefix)
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
 
+
 def test_sync_add_sync():
     try:
         local_test_data_prefix = tempfile.mkdtemp()
@@ -437,13 +452,15 @@ def test_sync_add_sync():
         print(f"Syncing data to '{LOCAL_TEST_DATA_PREFIX}'")
         manifest.sync(LOCAL_TEST_DATA_PREFIX)
         print(f"Adding file to manifest.")
-        manifest.add_file('eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
+        manifest.add_file(
+            'eight_As', TEST_DATA_FILE, TEST_LOCAL_RELATIVE_PATH, TEST_REMOTE_RELATIVE_PATH)
         print(f"Re-Syncing data to '{LOCAL_TEST_DATA_PREFIX}'")
         manifest.sync(LOCAL_TEST_DATA_PREFIX)
     finally:
         reset_test_manifest()
         shutil.rmtree(local_test_data_prefix)
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
+
 
 def test_verify_success():
     try:
@@ -462,8 +479,9 @@ def test_verify_success():
     finally:
         reset_test_manifest()
         print(local_test_data_prefix)
-        #shutil.rmtree(local_test_data_prefix)
+        # shutil.rmtree(local_test_data_prefix)
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
+
 
 def test_verify_size_fail():
     try:
@@ -483,8 +501,9 @@ def test_verify_size_fail():
     finally:
         reset_test_manifest()
         print(local_test_data_prefix)
-        #shutil.rmtree(local_test_data_prefix)
+        # shutil.rmtree(local_test_data_prefix)
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
+
 
 def test_verify_md5_fail():
     try:
@@ -504,37 +523,39 @@ def test_verify_md5_fail():
     finally:
         reset_test_manifest()
         print(local_test_data_prefix)
-        #shutil.rmtree(local_test_data_prefix)
+        # shutil.rmtree(local_test_data_prefix)
         _get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH).delete()
 
-#print("test_add_remote_missing_file")
-#test_add_remote_missing_file()
-#print("test_add_remote_present_file")
-#test_add_remote_present_file()
-#print("test_add_remote_mismatch_file")
-#test_add_remote_mismatch_file()
-#print("test_locking_works")
-#test_locking_works()
-#print("test_adding_two_files_works")
-#test_adding_two_files_works()
-#print("test_removing_file_works")
-#test_removing_file_works()
-#print("test_sync")
-#test_sync()
-#print("test_sync_add_sync")
-#test_sync_add_sync()
-#print("test_add_duplicate_key")
-#test_add_duplicate_key()
-#print("test_verify_success")
-#test_verify_success()
-#print("test_verify_fail")
-#test_verify_fail()
+# print("test_add_remote_missing_file")
+# test_add_remote_missing_file()
+# print("test_add_remote_present_file")
+# test_add_remote_present_file()
+# print("test_add_remote_mismatch_file")
+# test_add_remote_mismatch_file()
+# print("test_locking_works")
+# test_locking_works()
+# print("test_adding_two_files_works")
+# test_adding_two_files_works()
+# print("test_removing_file_works")
+# test_removing_file_works()
+# print("test_sync")
+# test_sync()
+# print("test_sync_add_sync")
+# test_sync_add_sync()
+# print("test_add_duplicate_key")
+# test_add_duplicate_key()
+# print("test_verify_success")
+# test_verify_success()
+# print("test_verify_fail")
+# test_verify_fail()
+
 
 def parse_args():
     # add data file
     # remove data file
     # replace data file
     pass
+
 
 def main(fname):
     with open(fname) as ifp:
@@ -565,5 +586,5 @@ def main(fname):
             print("\t".join(data))
     return
 
-#if __name__ == '__main__':
-#    main(sys.argv[1])
+# if __name__ == '__main__':
+#     main(sys.argv[1])

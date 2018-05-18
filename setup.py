@@ -10,12 +10,14 @@ from setuptools import setup, find_packages
 
 VERSION_FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './VERSION'))
 
+
 def get_version():
     if not os.path.exists(VERSION_FILEPATH):
         raise RuntimeError(f"Can not find version file at '{VERSION_FILEPATH}'")
 
     with open(VERSION_FILEPATH, 'r') as fp:
         return fp.read().strip()
+
 
 def main():
     version = get_version()
@@ -33,6 +35,7 @@ def main():
                   'freenome-build = freenome_build.freenome_build:main'
               ]
           })
+
 
 if __name__ == '__main__':
     main()

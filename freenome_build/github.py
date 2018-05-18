@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+
 def repo_name():
     """Return github repository name of current directory
 

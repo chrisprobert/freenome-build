@@ -2,8 +2,10 @@ import logging
 import os
 import re
 
+from freenome_build import github
 
-def version(repo_name=None):
+
+def version(path, repo_name=None):
     """Return version id
 
     Args:
@@ -13,10 +15,10 @@ def version(repo_name=None):
         (str): version id
     """
     if repo_name is None:
-        raise Exception('repo name must be passed')
+        repo_name = github.repo_name()
 
-    version_from_init = get_version_from_init(repo_name)
-    version_from_version_file = get_version_from_version_file()
+    version_from_init = get_version_from_init(path, repo_name)
+    version_from_version_file = get_version_from_version_file(path)
 
     assert version_from_init or version_from_version_file, "Version file cannot be found"
     assert (version_from_init is not None) ^ (version_from_version_file is not None), "Multiple version files found"
@@ -29,7 +31,7 @@ def version(repo_name=None):
         raise FileNotFoundError("Version file cannot be found.")
 
 
-def get_version_from_init(repo_name=None):
+def get_version_from_init(path, repo_name=None):
     """get version from init in repo with directory structure:
 
     lib_name
@@ -46,7 +48,7 @@ def get_version_from_init(repo_name=None):
     if repo_name is None:
         return None
 
-    repo_init_filepath = os.path.abspath('{}/__init__.py'.format(repo_name))
+    repo_init_filepath = os.path.abspath(os.path.join(path, './{}/__init__.py'.format(repo_name)))
     logging.debug('repo_init_filepath: {}'.format(repo_init_filepath))
 
     if os.path.exists(repo_init_filepath):
@@ -59,24 +61,20 @@ def get_version_from_init(repo_name=None):
         return version
 
 
-def get_version_from_version_file():
+def get_version_from_version_file(path):
     """get version from a VERSION file in the repo
 
-    lib_name
-    lib_name/VERSION
+    {PATH}/VERSION
 
     Returns:
         (str): version id
 
     """
-    version_filepath = os.path.abspath('./VERSION')
+    version_filepath = os.path.abspath(os.path.join(path, './VERSION'))
     logging.debug('version_filepath: {}'.format(version_filepath))
 
     if os.path.exists(version_filepath):
         with open(version_filepath, 'r') as fp:
-            # returns string following "__version__ = "
-            search = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                               fp.read(), re.MULTILINE)
-            version = search.group(1) if search is not None else None
-
+            version = fp.read().strip()
+        logging.debug("Found version: '{}'".format(version))
         return version
