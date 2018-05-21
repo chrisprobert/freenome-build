@@ -6,13 +6,14 @@ source:
   path: ..
 
 requirements:
-  build:
+  host:
     - python {{PY_VER}}*
-    - conda
-    - conda-build
-    - conda-verify
+
+  build:
     - setuptools
     - flake8
+    - jinja2
+    - pyyaml
 
   run:
     - python
@@ -27,5 +28,3 @@ channels:
 
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
-  entry_points:
-    - freenome-build = freenome_build.freenome_build:main

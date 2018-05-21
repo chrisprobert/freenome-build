@@ -1,28 +1,18 @@
 import os
 import logging
 import yaml
+import jinja2
 
-from freenome_build.util import build_package, run_and_log, norm_abs_join_path
-from freenome_build import version_utils
+from freenome_build.util import build_package, run_and_log, norm_abs_join_path, CondaMetaYaml
 
 logger = logging.getLogger(__file__)  # noqa: invalid-name
 
 
-def get_package_name(path):
-    with open(norm_abs_join_path(path, './conda-build/meta.yaml')) as ifp:
-        data_template = ifp.read()
-        # replace the VERSION template with 0, because we don't actually care
-        # about the version to get the package name, but we need to yaml to be parseable
-        data = yaml.load(data_template.replace("{{ VERSION }}", "0"))
-        return data['package']['name']
-
-
 def setup_development_environment(path):
-    version = version_utils.version(path)
-    logging.debug('version: %s', version)
+    meta_data = CondaMetaYaml(path)
 
     # get package name
-    package_name = get_package_name(path)
+    package_name = meta_data.package_name
     logging.debug('package name: %s', package_name)
 
     # build the package.

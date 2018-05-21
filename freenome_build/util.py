@@ -2,16 +2,40 @@ import os
 import contextlib
 import subprocess
 import logging
+import yaml
+import jinja2
 
 import conda_build.api
 from conda_build.config import Config as CondaBuildConfig
 
+from freenome_build.version_utils import version
 
 logger = logging.getLogger(__file__)  # noqa: invalid-name
 
 
 def norm_abs_join_path(*paths):
     return os.path.normpath(os.path.abspath(os.path.join(*paths)))
+
+
+class CondaMetaYaml:
+    def __init__(self, repo_path):
+        self.version = version(repo_path)
+        with open(norm_abs_join_path(repo_path, './conda-build/meta.yaml')) as ifp:
+            self._template = jinja2.Template(ifp.read())
+            self._data = yaml.load(
+                self._template.render(
+                    VERSION=self.version,
+                    PY_VER='3'
+                )
+            )
+
+    @property
+    def package_name(self):
+        return self._data['package']['name']
+
+    @property
+    def requirements(self):
+        return self._data['requirements']
 
 
 def get_yaml_path(repo_path):
