@@ -10,7 +10,10 @@ logger = logging.getLogger(__file__)  # noqa: invalid-name
 
 def get_package_name(path):
     with open(norm_abs_join_path(path, './conda-build/meta.yaml')) as ifp:
-        data = yaml.load(ifp)
+        data_template = ifp.read()
+        # replace the VERSION template with 0, because we don't actually care
+        # about the version to get the package name, but we need to yaml to be parseable
+        data = yaml.load(data_template.replace("{{ VERSION }}", "0"))
         return data['package']['name']
 
 
@@ -19,7 +22,8 @@ def setup_development_environment(path):
     logging.debug('version: %s', version)
 
     # get package name
-    package_name = 'balrog'
+    package_name = get_package_name(path)
+    logging.debug('package name: %s', package_name)
 
     # build the package.
     # ( we need to do this to install the dependencies -- which is super hacky but required
