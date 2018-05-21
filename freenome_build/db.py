@@ -1,9 +1,10 @@
 import os
 import time
 import subprocess
+import logging
 import psycopg2
 
-from freenome_build.util import norm_abs_join_path, change_directory, get_git_repo_name
+from freenome_build.util import norm_abs_join_path, change_directory, get_git_repo_name, run_and_log
 
 logger = logging.getLogger(__file__)  # noqa: invalid-name
 
@@ -16,24 +17,6 @@ MAX_DB_WAIT_TIME = 10
 
 class ContainerDoesNotExistError(Exception):
     pass
-
-
-def _run_and_log(cmd, input=None):
-    logger.info(f"Running '{cmd}'")
-
-    proc = subprocess.run(
-        cmd, shell=True, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-
-    if proc.stderr:
-        logger.info(f"Ran '{cmd}'\nSTDERR:\n{proc.stderr.decode().strip()}")
-    if proc.stdout:
-        logger.info(f"Ran '{cmd}'\nSTDOUT:\n{proc.stdout.decode().strip()}")
-
-    # raise an excpetion if the return code was non-zero
-    proc.check_returncode()
-
-    return proc
 
 
 def _execute_sql_script(sql_script_path, dbuser, dbname, host, port):
@@ -62,7 +45,7 @@ def _setup_db(image_name, repo_path, host, port):
             )
 
     # execute the setup.sql script
-    _run_and_log(f"psql -h {host} -p {port} -U postgres", input=setup_sql.encode())
+    run_and_log(f"psql -h {host} -p {port} -U postgres", input=setup_sql.encode())
 
     return
 
@@ -84,7 +67,7 @@ def _run_migrations(repo_path, host, port, dbname, dbuser):
 
     with change_directory(sqitch_path):
         try:
-            _run_and_log(
+            run_and_log(
                 f"sqitch --engine pg deploy db:pg://postgres@{host}:{port}/{dbname}")
         except subprocess.CalledProcessError as inst:
             # we don't care if there's nothing to deploy
@@ -111,7 +94,7 @@ def _insert_test_data(repo_path, host, port, dbuser, dbname):
     if os.path.exists(repo_insert_test_data_sql_path):
         logger.info(f"Inserting data in '{repo_insert_test_data_sql_path}'.")
         with open(repo_insert_test_data_sql_path) as ifp:
-            _run_and_log(
+            run_and_log(
                 f"psql -h {host} -p {port} -U {dbuser} {dbname}",
                 input=ifp.read().encode()
             )
@@ -145,7 +128,7 @@ def stop_test_database(project_name, host=DEFAULT_TEST_DB_HOST, port=DEFAULT_TES
     image_name = f"{project_name}_{port}"
     cmd = f"docker kill {image_name}"
     try:
-        _run_and_log(cmd)
+        run_and_log(cmd)
     except subprocess.CalledProcessError as inst:
         # if this is an error because the container already exists, then raise
         # a custom error type
@@ -158,7 +141,7 @@ def stop_test_database(project_name, host=DEFAULT_TEST_DB_HOST, port=DEFAULT_TES
             raise
 
     cmd = f"docker rm -f {image_name}"
-    _run_and_log(cmd)
+    run_and_log(cmd)
 
 
 def start_test_database(
@@ -192,11 +175,11 @@ def start_test_database(
 
     # build
     cmd = f"docker build --rm -t {project_name}:latest {docker_file_dir}"
-    _run_and_log(cmd)
+    run_and_log(cmd)
 
     # starting-db
     cmd = f"docker run -d -p {port}:5432 --name {project_name}_{port} {project_name}:latest"
-    _run_and_log(cmd)
+    run_and_log(cmd)
     # the database cluster needs some time to start, so try to connect periodically until we can
     _wait_for_db_cluster_to_start(host, port)
 

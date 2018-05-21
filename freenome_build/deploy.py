@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 
-from freenome_build.utils import build_package
+from freenome_build.util import build_package
 
 LOCAL_CONDA_BUILD_SCRIPT = os.path.abspath('scripts/conda_build.sh')
 

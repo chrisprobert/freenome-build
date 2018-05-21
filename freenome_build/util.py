@@ -1,9 +1,13 @@
 import os
 import contextlib
 import subprocess
+import logging
 
 import conda_build.api
 from conda_build.config import Config as CondaBuildConfig
+
+
+logger = logging.getLogger(__file__)  # noqa: invalid-name
 
 
 def norm_abs_join_path(*paths):
@@ -16,6 +20,24 @@ def get_yaml_path(repo_path):
         raise ValueError(f"Could not find a meta.yaml file at '{yaml_fpath}'")
     else:
         return yaml_fpath
+
+
+def run_and_log(cmd, input=None):
+    logger.info(f"Running '{cmd}'")
+
+    proc = subprocess.run(
+        cmd, shell=True, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+
+    if proc.stderr:
+        logger.info(f"Ran '{cmd}'\nSTDERR:\n{proc.stderr.decode().strip()}")
+    if proc.stdout:
+        logger.info(f"Ran '{cmd}'\nSTDOUT:\n{proc.stdout.decode().strip()}")
+
+    # raise an excpetion if the return code was non-zero
+    proc.check_returncode()
+
+    return proc
 
 
 @contextlib.contextmanager
@@ -41,7 +63,7 @@ def get_git_repo_name(path):
         return os.path.basename(res)[:-4]
 
 
-def _build_package(path, version, skip_existing=False):
+def build_package(path, version, skip_existing=False):
     # Set the environment variable VERSION so that
     # the jinja2 templating works for the conda-build
     local_env = os.environ

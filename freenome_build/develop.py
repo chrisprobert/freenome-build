@@ -1,10 +1,17 @@
 import os
 import logging
+import yaml
 
-from freenome_build.utils import build_package, run_and_log, norm_abs_join_path
+from freenome_build.util import build_package, run_and_log, norm_abs_join_path
 from freenome_build import version_utils
 
 logger = logging.getLogger(__file__)  # noqa: invalid-name
+
+
+def get_package_name(path):
+    with open(norm_abs_join_path(path, './conda-build/meta.yaml')) as ifp:
+        data = yaml.load(ifp)
+        return data['package']['name']
 
 
 def setup_development_environment(path):
