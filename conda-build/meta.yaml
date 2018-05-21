@@ -12,6 +12,7 @@ requirements:
     - conda-build
     - conda-verify
     - setuptools
+    - flake8
 
   run:
     - python
