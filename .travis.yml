@@ -18,7 +18,7 @@ services:
 install:
   - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
   - freenome-build develop .
-  - cpanm --quiet --notest App::Sqitch
+  - sudo cpanm --quiet --notest App::Sqitch
 cache: pip
 script:
   - python3 -m flake8 pipeline tests bin
