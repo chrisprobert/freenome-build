@@ -27,7 +27,7 @@ def setup_development_environment(path):
         package_name = get_package_name_from_meta_yaml(path)
     except FileNotFoundError:
         with change_directory(path):
-            package_name = repo_name()
+            package_name = repo_name().replace("_", "-")
 
     logging.debug('package name: %s', package_name)
 
