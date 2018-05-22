@@ -2,13 +2,14 @@ import os
 import logging
 import yaml
 
-from freenome_build.util import build_package, run_and_log, norm_abs_join_path
+from freenome_build.util import build_package, run_and_log, norm_abs_join_path, change_directory
+from freenome_build.github import repo_name
 from freenome_build import version_utils
 
 logger = logging.getLogger(__file__)  # noqa: invalid-name
 
 
-def get_package_name(path):
+def get_package_name_from_meta_yaml(path):
     with open(norm_abs_join_path(path, './conda-build/meta.yaml')) as ifp:
         data_template = ifp.read()
         # replace the VERSION template with 0, because we don't actually care
@@ -22,7 +23,12 @@ def setup_development_environment(path):
     logging.debug('version: %s', version)
 
     # get package name
-    package_name = get_package_name(path)
+    try:
+        package_name = get_package_name_from_meta_yaml(path)
+    except FileNotFoundError:
+        with change_directory(path):
+            package_name = repo_name()
+
     logging.debug('package name: %s', package_name)
 
     # build the package.
