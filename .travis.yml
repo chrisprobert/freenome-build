@@ -1,13 +1,15 @@
 language: python
 python:
-- 3.6
+  - 3.6
 dist: trusty
 sudo: false
 install:
-- pip3 install -r update_requirements.txt
+  - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
 cache: pip
 script:
-- flake8 .
+  - python3 -m flake8 pipeline tests bin
+  - python3 -m pytest -vv --doctest-module pipeline bin
+  - python3 -m pytest -vv --cov=./ tests/
 branches:
   only:
   - master
@@ -15,7 +17,8 @@ branches:
 deploy:
   provider: script
   script:
-  - bash scripts/conda_build.sh $ANACONDA_TOKEN
+  - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
+  - freenome-build deploy -u
   skip_cleanup: true
   on:
     tags: true
