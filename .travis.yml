@@ -3,11 +3,22 @@ python:
   - 3.6
 dist: trusty
 sudo: true
+addons:
+  apt:
+    packages:
+    - libdbd-pg-perl
+    - postgresql-client
+    - build-essential
+    - cpanminus
+    - perl
+    - perl-doc
 services:
   - docker
+
 install:
   - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
   - freenome-build develop .
+  - cpanm --quiet --notest App::Sqitch
 cache: pip
 script:
   - python3 -m flake8 pipeline tests bin
