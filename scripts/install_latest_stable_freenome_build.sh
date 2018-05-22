@@ -15,18 +15,9 @@ if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
 fi
 
 # enable access to freenome channel
-conda config --add channels https://conda.anaconda.org/t/$ANACONDA_TOKEN/freenome
 conda config --add channels conda-forge
 conda config --add channels bioconda
-
-# XXX -- I think this should happen automatically by installing freenome-build
-# install conda packages needed for upload
-# conda install --yes conda conda-verify conda-build anaconda-client
+conda config --add channels https://conda.anaconda.org/t/$ANACONDA_TOKEN/freenome
 
 # install freenome-build
 conda install freenome-build --yes
-
-# output conda info for debugging
-## I don't think that we need this anymore
-# conda config --set anaconda_upload no
-conda info -a
