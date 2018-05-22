@@ -4,3 +4,4 @@ conda
 conda-build
 conda-verify
 anaconda-client
+psycopg2
