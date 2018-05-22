@@ -31,6 +31,7 @@ def main():
           distclass=distutils.command.bdist_conda.CondaDistribution,
           description='Freenome build',
           install_requires=reqs,
+          test_requires=['pytest'],
           include_package_data=True,
           package_data={'freenome_build': ['database_template/*', 'database_template/*/*']},
           packages=find_packages(),
