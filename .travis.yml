@@ -2,15 +2,16 @@ language: python
 python:
   - 3.6
 dist: trusty
-sudo: false
+sudo: true
+services:
+  - docker
 install:
   - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
   - freenome-build develop .
 cache: pip
 script:
   - python3 -m flake8 pipeline tests bin
-  - python3 -m pytest -vv --doctest-module pipeline bin
-  - python3 -m pytest -vv --cov=./ tests/
+  - python3 -m pytest -vv
 branches:
   only:
   - master
