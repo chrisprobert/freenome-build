@@ -1,0 +1,4 @@
+%syntax-version=1.0.0
+%project=skeleton
+
+create_test_table 2018-05-21T21:29:35Z Nathan Boley <nathan.boley@freenome.com> # Initial commit.

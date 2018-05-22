@@ -10,27 +10,14 @@ MINICONDA_INSTALL_PATH=$HOME/miniconda
 ANACONDA_INSTALLED=1
 command -v conda >/dev/null 2>&1 || ANACONDA_INSTALLED=0
 
-# check that conda has not been installed with pip
-PIP_INSTALLED=$( pip freeze | egrep conda ) >/dev/null 2>&1
-if  [[ ! -z $PIP_INSTALLED ]]; then
-    echo "conda is pip installed. Exiting."
-    exit
-fi
-
 if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     #install conda
     wget $MINICONDA_URL
     bash $( basename $MINICONDA_URL ) -b -p $MINICONDA_INSTALL_PATH
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
+
+    # install conda in the base environment
+    conda install conda conda-verify conda-build anaconda-client --yes
 fi
-
-conda create -n conda_env python=$PYTHON_VERSION
-conda activate conda_env
-
-# install conda in the base environment
-conda install conda --yes
-conda install conda-verify --yes
-conda install conda-build --yes
-conda install anaconda --yes
 
 python setup.py install

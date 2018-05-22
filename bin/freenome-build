@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+import argparse
+import logging
+
+from freenome_build.db import add_db_subparser, db_main
+from freenome_build.develop import add_develop_subparser, develop_main
+from freenome_build.deploy import add_deploy_subparser, deploy_main
+
+
+logger = logging.getLogger(__file__)  # noqa: invalid-name
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--debug', action='store_true', default=False, dest='debug')
+
+    subparsers = parser.add_subparsers(dest='command')
+    subparsers.required = True
+
+    add_develop_subparser(subparsers)
+    add_deploy_subparser(subparsers)
+    add_db_subparser(subparsers)
+
+    args = parser.parse_args()
+
+    return args
+
+
+def main():
+    args = parse_args()
+
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+
+    if args.command == 'develop':
+        develop_main(args)
+    elif args.command == 'test-db':
+        db_main(args)
+    elif args.command == 'deploy':
+        deploy_main(args)
+    else:
+        assert False, "Unreachable b/c sub commands are specified in the parser."
+
+
+if __name__ == '__main__':
+    main()

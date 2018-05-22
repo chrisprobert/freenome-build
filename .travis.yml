@@ -5,7 +5,6 @@ dist: trusty
 sudo: false
 install:
 - pip3 install -r update_requirements.txt
-- pip3 install -r requirements.txt
 cache: pip
 script:
 - flake8 .
