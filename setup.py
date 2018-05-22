@@ -1,6 +1,5 @@
 import os
 from setuptools import setup, find_packages
-import distutils.command.bdist_conda
 
 try:
     from pip.download import PipSession
@@ -28,10 +27,8 @@ def main():
 
     setup(name='freenome-build',
           version=version,
-          distclass=distutils.command.bdist_conda.CondaDistribution,
           description='Freenome build',
-          install_requires=reqs,
-          test_requires=['pytest'],
+          install_requires=reqs + ["pytest"],
           include_package_data=True,
           package_data={'freenome_build': ['database_template/*', 'database_template/*/*']},
           packages=find_packages(),
