@@ -1,6 +1,8 @@
 # freenome-build
 Packaging and build tools.
 
+** This is alpha quality software and should not be used for production workloads **
+
 ## Bootstrapping requires scripts/conda_build.sh
 Each repo must clone the freenome-build repo during a travis build so that it can call `scripts/conda_build.sh`. This requires that that repo on travis has a github access token generated locally using the ruby travis script. For example for LIMS-API I ran the following
 
@@ -18,4 +20,3 @@ travis endpoint --pro --set-default
 travis login
 travis encrypt ANACONDA_TOKEN=[ANACONDA_TOKEN] --add
 ```
-
