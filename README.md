@@ -4,7 +4,7 @@
 Packaging, build, and development tools.
 
 ## freenome-build test-db
-Manage a test postgres DB in a Docker container. This also runs a DB setup script and DB migrations. The structure of the setup and migrations scripts is described in more detail in the  [README](./database/README.md)
+Manage a test postgres DB in a Docker container. This also runs a DB setup script and DB migrations. The structure of the setup and migrations scripts is described in more detail in the  [README](./freenome_build/database_template/README.md)
 
 ## freenome-build test-db start
 Start a test DB.
