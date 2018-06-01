@@ -1,6 +1,6 @@
 language: python
 python:
-  - 3.6
+- 3.6
 dist: trusty
 sudo: true
 addons:
@@ -13,16 +13,15 @@ addons:
     - perl
     - perl-doc
 services:
-  - docker
-
+- docker
 install:
-  - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
-  - freenome-build develop .
-  - sudo cpanm --quiet --notest App::Sqitch
+- source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
+- freenome-build develop .
+- sudo cpanm --quiet --notest App::Sqitch
 cache: pip
 script:
-  - python3 -m flake8 pipeline tests bin
-  - python3 -m pytest -vv
+- python3 -m flake8 pipeline tests bin
+- python3 -m pytest -vv
 branches:
   only:
   - master
@@ -32,6 +31,12 @@ deploy:
   script:
   - freenome-build deploy -u
   skip_cleanup: true
+  on:
+    tags: true
+  provider: pypi
+  user: "nboley"
+  password:
+    secure: MJ2tTFg+4i0WmaXEglW/8A1aOO3ZV4rrSC4BstOWMzjYm6Dbs3UDIS3IwJ8gzDnX1yQCF2q25+rlHM7w4B/9t8FGgL2Kv8vwuNWx97EOzBjJ78ouf7KMQab0lhsZ4uMpCOXR6ZMa1ChukXZiceHnTwDUBcavduDpPwCDs8GXgglAQdcPLdSK5dM04MAZeukh+yawh8BmWPdtuYy41awiCIxoqupW3MI4ZP4cP4SkrjYd+pt2Pmf4JR/kUia+qnJrTE1IJ1Mh4KKGh06qf82hJGENlebDe5nRnIT3fika5dx1gjBz0/wnvhLxIlAZhNPC1HpLcX5wMw4t1mnj57ntZmaJy8QZwYUItRLKHkI+/hRAQWsSCQaGk1bFBnjuOmKh7XQUrqsK3QjKw4a6H13XudaWvqYmVT3ASIUTgj/HoZ9xEYdUJR0C5Y3K2h7CUb3o2g0RdswmqIynknUfjRLsQiweL3gFdoXXJYIeyYqrazfG70F0CtS8ZCagQquDHVsXYd5ylHV12DVsqmn+0ngnvcXBjMHABS/LUNm32KXCJLzUFK2pcnA4MwCxE8ZjGaTjff56obwZC2ogM27xG30xxMLvf9lSYx3a5/0asg2GJCdY/PKFtM2HdWBjKXstqgKdudRe9y6jizvwjq4rTxRbbeAmCdat1JLNQX9TwnZ7QYE=
   on:
     tags: true
 env:
