@@ -28,9 +28,17 @@ def main():
     setup(name='freenome-build',
           version=version,
           description='Freenome build',
+          url='https://github.com/freenome/freenome-build',
+          author='Nathan Boley',
+          author_email="nathan.boley@freenome.com",
           install_requires=reqs + ["pytest"],
-          include_package_data=True,
-          package_data={'freenome_build': ['database_template/*', 'database_template/*/*']},
+          package_data={
+              '': ['./VERSION'],
+              'freenome_build': [
+                  './database_template/*',
+                  './database_template/*/*',
+              ]
+          },
           packages=find_packages(),
           scripts=['bin/freenome-build'])
 
