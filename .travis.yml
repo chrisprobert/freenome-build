@@ -27,14 +27,13 @@ branches:
   - master
   - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
 deploy:
-  provider: script
-  script:
-  - freenome-build deploy -u
+- provider: script
+  script: freenome-build deploy -u
   skip_cleanup: true
   on:
     tags: true
-  provider: pypi
-  user: "nboley"
+- provider: pypi
+  user: nboley
   password:
     secure: MJ2tTFg+4i0WmaXEglW/8A1aOO3ZV4rrSC4BstOWMzjYm6Dbs3UDIS3IwJ8gzDnX1yQCF2q25+rlHM7w4B/9t8FGgL2Kv8vwuNWx97EOzBjJ78ouf7KMQab0lhsZ4uMpCOXR6ZMa1ChukXZiceHnTwDUBcavduDpPwCDs8GXgglAQdcPLdSK5dM04MAZeukh+yawh8BmWPdtuYy41awiCIxoqupW3MI4ZP4cP4SkrjYd+pt2Pmf4JR/kUia+qnJrTE1IJ1Mh4KKGh06qf82hJGENlebDe5nRnIT3fika5dx1gjBz0/wnvhLxIlAZhNPC1HpLcX5wMw4t1mnj57ntZmaJy8QZwYUItRLKHkI+/hRAQWsSCQaGk1bFBnjuOmKh7XQUrqsK3QjKw4a6H13XudaWvqYmVT3ASIUTgj/HoZ9xEYdUJR0C5Y3K2h7CUb3o2g0RdswmqIynknUfjRLsQiweL3gFdoXXJYIeyYqrazfG70F0CtS8ZCagQquDHVsXYd5ylHV12DVsqmn+0ngnvcXBjMHABS/LUNm32KXCJLzUFK2pcnA4MwCxE8ZjGaTjff56obwZC2ogM27xG30xxMLvf9lSYx3a5/0asg2GJCdY/PKFtM2HdWBjKXstqgKdudRe9y6jizvwjq4rTxRbbeAmCdat1JLNQX9TwnZ7QYE=
   on:
