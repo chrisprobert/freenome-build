@@ -19,8 +19,8 @@ dist: trusty
 #- freenome-build develop .
 #- sudo cpanm --quiet --notest App::Sqitch
 #cache: pip
-#script:
-#- python3 -m flake8 pipeline tests bin
+script:
+- python3 -m flake8 pipeline tests bin
 #- python3 -m pytest -vv
 branches:
   only:
@@ -32,7 +32,7 @@ deploy:
 #  skip_cleanup: true
 #  on:
 #    tags: true
-- provider: pypi
+  provider: pypi
   user: nboley
   password:
     secure: TKCVIT03u96zIyK+/eVqRos0NzmNjzp1LO0UsBAXy9deK9JHGoupW+X82+yGfdDcoS/hcq6CC6ONn2DSiu8wx3gLdlGt2AixcvOyMD1wBSTMR6xqHvfPM3VstFdqoMeyiXrVXqybbHyRs7Z52JrGMXGHr43+ZG3XJ8xWvYhp35d8cWwYzKwtNQYHh7lWWd+wgKTDH5DtcwROmYTMkjLUawlpNp0gKwDA+fU6UoPpArqAFMNLmEDIK0Ji+dWX8fDEWntmC9RGTLQMWqndX4fKHtaeAnedEcSGA0AuvOfweBr3ucdMy2wmal2K3HjdBOlkYqr0rUHOzILSyurTfrSqeVnkRyqXGz/4M9RGOU9pWEuN+YU2h16xYe+YsjwtormyBIBJaQ2kxcIl0obJ79XiFzK3ramkMF4PakW6LsoIAQs8tks5ECGb/CQ++ZnmEX3ulj1HTu5mCnXAnfr24whsy/oNuHjujQs6ZdaHUuzy12VwjmNS7uSUNykBr0bjZosLckv9NnEAsbBpgLkH+j72A8xW5XvLFBap/xTg1VPsr+fukhSLwJ6WvsC+6DlIRG45E7HSKJ1UP6z6OpVMSx19q8D3gPw8U/oRhBFl+vIECjnfNU7NKdUSZkNaZyToUlrPDn0kTQ5bXuXuZKDNYRCrObGFdmtWPXzPtr5fWoe8oyI=
