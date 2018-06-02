@@ -6,6 +6,5 @@ script:
   echo HELLO
 deploy:
   provider: pypi
-  user: nboley
-  password:
-    secure: cIS1Ql43fgW+rX7N4Qv6Jm9vNuQYeAC8+3AoW+iEDAeMB7s37tXgPx6/wUeqhryjYxoMU+R8ATzeugzvbDA8qNkcX32PV5LQQuNYhU+OwPA6V7JCXvrNkV4bIvn24lwjyX1UYVG69xGTexE83i5Ww+YCeqA9Adgjgo3V4rIMh7LQ/mJJsPJllpQoSkPqDmEZkvo9xnCkLSFMEktsSGdYHTnAaz5L/B50EI7pAtfECRXMdI2adv+EdgykRmUstisOZTtW+MwEeVY02Dvi+x+30Mp2rzOMtAmQsz9qugO4VzKuuShW/2PHQWE+Xc4TbWL2BG0/m9XwpF5FTHQNNkCLtSXPwW4OC7TchXwSq2YMiaMVvSZFwxVTPGuFk8s9ucdzXhV/tLWIFmWOqgvo36B6X4bXwbC2lf+5cj0AGDeGm+xerp+cyUM8Gpb20nr+63vTQBce0lkTvLIhkuyo67eLbmksQ3/BgE3f/M/V2vmvQckKI6WUNnes8HA4HmwiILJ8phP6DCvUBHFm2wJJ6wgaivxNNVGgw7Ox/HYYz0hUW44ItQbQYSYPn6VZUz+dsTIJOh9RbOIg0ee7v8u/LEwZhJIjbcaYV0dH/U6vk6YFThWYX7Rq9xoJVQ/Y0vhWceATQMUuL63j9SoQ0m71k92+C8bkxenhPBW1SFcc+Qh8ki0=
+  user: "nboley"
+  password: "freenome"
