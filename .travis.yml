@@ -27,17 +27,18 @@ branches:
   - master
   - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
 deploy:
-- provider: script
-  script: freenome-build deploy -u
-  skip_cleanup: true
-  on:
-    tags: true
-- provider: pypi
-  user: nboley
+  matrix:
+  - provider: script
+    script: freenome-build deploy -u
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: pypi
+    user: nboley
+    on:
+      tags: true
   password:
-    secure: MJ2tTFg+4i0WmaXEglW/8A1aOO3ZV4rrSC4BstOWMzjYm6Dbs3UDIS3IwJ8gzDnX1yQCF2q25+rlHM7w4B/9t8FGgL2Kv8vwuNWx97EOzBjJ78ouf7KMQab0lhsZ4uMpCOXR6ZMa1ChukXZiceHnTwDUBcavduDpPwCDs8GXgglAQdcPLdSK5dM04MAZeukh+yawh8BmWPdtuYy41awiCIxoqupW3MI4ZP4cP4SkrjYd+pt2Pmf4JR/kUia+qnJrTE1IJ1Mh4KKGh06qf82hJGENlebDe5nRnIT3fika5dx1gjBz0/wnvhLxIlAZhNPC1HpLcX5wMw4t1mnj57ntZmaJy8QZwYUItRLKHkI+/hRAQWsSCQaGk1bFBnjuOmKh7XQUrqsK3QjKw4a6H13XudaWvqYmVT3ASIUTgj/HoZ9xEYdUJR0C5Y3K2h7CUb3o2g0RdswmqIynknUfjRLsQiweL3gFdoXXJYIeyYqrazfG70F0CtS8ZCagQquDHVsXYd5ylHV12DVsqmn+0ngnvcXBjMHABS/LUNm32KXCJLzUFK2pcnA4MwCxE8ZjGaTjff56obwZC2ogM27xG30xxMLvf9lSYx3a5/0asg2GJCdY/PKFtM2HdWBjKXstqgKdudRe9y6jizvwjq4rTxRbbeAmCdat1JLNQX9TwnZ7QYE=
-  on:
-    tags: true
+    secure: TKCVIT03u96zIyK+/eVqRos0NzmNjzp1LO0UsBAXy9deK9JHGoupW+X82+yGfdDcoS/hcq6CC6ONn2DSiu8wx3gLdlGt2AixcvOyMD1wBSTMR6xqHvfPM3VstFdqoMeyiXrVXqybbHyRs7Z52JrGMXGHr43+ZG3XJ8xWvYhp35d8cWwYzKwtNQYHh7lWWd+wgKTDH5DtcwROmYTMkjLUawlpNp0gKwDA+fU6UoPpArqAFMNLmEDIK0Ji+dWX8fDEWntmC9RGTLQMWqndX4fKHtaeAnedEcSGA0AuvOfweBr3ucdMy2wmal2K3HjdBOlkYqr0rUHOzILSyurTfrSqeVnkRyqXGz/4M9RGOU9pWEuN+YU2h16xYe+YsjwtormyBIBJaQ2kxcIl0obJ79XiFzK3ramkMF4PakW6LsoIAQs8tks5ECGb/CQ++ZnmEX3ulj1HTu5mCnXAnfr24whsy/oNuHjujQs6ZdaHUuzy12VwjmNS7uSUNykBr0bjZosLckv9NnEAsbBpgLkH+j72A8xW5XvLFBap/xTg1VPsr+fukhSLwJ6WvsC+6DlIRG45E7HSKJ1UP6z6OpVMSx19q8D3gPw8U/oRhBFl+vIECjnfNU7NKdUSZkNaZyToUlrPDn0kTQ5bXuXuZKDNYRCrObGFdmtWPXzPtr5fWoe8oyI=
 env:
   global:
   - secure: fc0se2Hw0OC2Ws5IF/eSYqaVQZNDMHQu2HQeqmgMZtf1vDO71zJiI9OQtrDOPwQA0vqV7S2tBVDZIs0A/32todp42DNFYUTtrJWRmsqa3JwtMz6RGdSCF7xGeC01kawWj9FLARhHqBdtRCpq40fHfcjn/87c2/yQxqUCrElQ5acu7f2iN92tyjHB3byRvjXK+RXPn4gUeryKtehpMsq6K9ndP5EN3YQdHijkzeT0p2TxfgupJjSdxYDlcLwWkyIBZv975pZW0fBl2AITm7Ih7hFcE071vACveWtR/HYaZqsS29yC8yNXwvBwqTthvPHr4d9B0GKSm1IqArxThWIUkdvkwBgTmPwESjMzHd+Z9L/BHMOMbslp3U+0Uz2ZO8tAUPRXYaeMXsyII/8bL6SuyCHCKvTo3BAiTUktwGgJkl/LmtqXpvBYNhqPL45U2/56T1TQXvp2Rk4s4vfj+INRKJ66VFHF1Osq5kuIw28NdY/TSbhK+RO8sfgQTQj72TVdtvkuj0eAFysCc7f9k1YEyRYwNlO+vhZSWBgrOhuSLvcTUt6ELyOvCDK6D9i7eepAw7hRNVfCOjCYBXXYvXjkeLuw3tGgTYqFg45s3OxemieC0FQAnOYzj0z9cEeFJezKysDXEQXuJ9I6u3SEvq0ZmukPSjzbibB/41NI7XFWc/s=
