@@ -1,6 +1,5 @@
 import os
 import setuptools
-import distutils.command.bdist_conda
 
 try:
     from pip.download import PipSession
@@ -33,9 +32,6 @@ def main():
         url='https://github.com/freenome/freenome-build',
         author='Nathan Boley',
         author_email="nathan.boley@freenome.com",
-
-        # allow us to bdist_conda
-        distclass=distutils.command.bdist_conda.CondaDistribution,
 
         install_requires=reqs + ["pytest"],
         package_data={
