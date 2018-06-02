@@ -3,6 +3,7 @@ python:
 - 3.6
 dist: trusty
 script: echo HELLO
+install: python setup.py sdist
 deploy:
   provider: pypi
   user: "nboley"
