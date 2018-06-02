@@ -2,36 +2,36 @@ language: python
 python:
 - 3.6
 dist: trusty
-sudo: true
-addons:
-  apt:
-    packages:
-    - libdbd-pg-perl
-    - postgresql-client
-    - build-essential
-    - cpanminus
-    - perl
-    - perl-doc
-services:
-- docker
-install:
-- source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
-- freenome-build develop .
-- sudo cpanm --quiet --notest App::Sqitch
-cache: pip
-script:
-- python3 -m flake8 pipeline tests bin
-- python3 -m pytest -vv
+#sudo: true
+#addons:
+#  apt:
+#    packages:
+#    - libdbd-pg-perl
+#    - postgresql-client
+#    - build-essential
+#    - cpanminus
+#    - perl
+#    - perl-doc
+#services:
+#- docker
+#install:
+#- source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
+#- freenome-build develop .
+#- sudo cpanm --quiet --notest App::Sqitch
+#cache: pip
+#script:
+#- python3 -m flake8 pipeline tests bin
+#- python3 -m pytest -vv
 branches:
   only:
   - master
   - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
 deploy:
-- provider: script
-  script: freenome-build deploy -u
-  skip_cleanup: true
-  on:
-    tags: true
+#- provider: script
+#  script: freenome-build deploy -u
+#  skip_cleanup: true
+#  on:
+#    tags: true
 - provider: pypi
   user: nboley
   password:
