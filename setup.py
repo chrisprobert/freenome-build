@@ -1,5 +1,6 @@
 import os
-from setuptools import setup, find_packages
+import setuptools
+import distutils.command.bdist_conda
 
 try:
     from pip.download import PipSession
@@ -25,22 +26,28 @@ def main():
     install_reqs = parse_requirements("update_requirements.txt", session=PipSession())
     reqs = [str(ir.req) for ir in install_reqs if ir.req]
 
-    setup(name='freenome-build',
-          version=version,
-          description='Freenome build',
-          url='https://github.com/freenome/freenome-build',
-          author='Nathan Boley',
-          author_email="nathan.boley@freenome.com",
-          install_requires=reqs + ["pytest"],
-          package_data={
-              '': ['./VERSION'],
-              'freenome_build': [
-                  './database_template/*',
-                  './database_template/*/*',
-              ]
-          },
-          packages=find_packages(),
-          scripts=['bin/freenome-build'])
+    setuptools.setup(
+        name='freenome-build',
+        version=version,
+        description='Freenome build',
+        url='https://github.com/freenome/freenome-build',
+        author='Nathan Boley',
+        author_email="nathan.boley@freenome.com",
+
+        # allow us to bdist_conda
+        distclass=distutils.command.bdist_conda.CondaDistribution,
+
+        install_requires=reqs + ["pytest"],
+        package_data={
+            '': ['./VERSION'],
+            'freenome_build': [
+                './database_template/*',
+                './database_template/*/*',
+            ]
+        },
+        packages=setuptools.find_packages(),
+        scripts=['bin/freenome-build']
+    )
 
 
 if __name__ == '__main__':
