@@ -1,3 +1,7 @@
+language: python
+python:
+- 3.6
+dist: trusty
 deploy:
   provider: pypi
   user: nboley
