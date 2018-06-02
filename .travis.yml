@@ -2,9 +2,9 @@ language: python
 python:
 - 3.6
 dist: trusty
-script:
-  echo HELLO
+script: echo HELLO
 deploy:
   provider: pypi
   user: "nboley"
-  password: "freenome"
+  password:
+    secure: MIFf0ntSUYmHonwyP0pNfbydmeeWqlts1SzBTmHEtGG5zKoVy9GlV3Qdyj8T9SvRk+zymLomGW5fVyDRnhl110pwm/r9kwc9EtHwROZF9NDuCMpEnBmq8n4/UfhVOrqNJLWFWbn0inlLGLRkNwifdN1tZyC9GphQhfs1KKkSOLuvuln13Vi3jKaxr/mXkMoZRNSLYSjkXIbx2F9dSx9hTErJ8c46HayKasUoUwGScgBEX3D2dATyCrvMkIHBnZxkSWrH7lt13+1hZnZzUXb6pSB6KCRc3GQytSbGNKL3jNYz/4K4nt32qM76pyTKZCHmCHpivjVsBV4nwYwQnGslSABHF73vFJ3WCnSxmGKvlke+nx/xSvpDH7HX5OzLkGQuBQx6fm+k8j+yKTABacwIKxrHkgAg8zh9k8NjQoSS8nZ64xXMU3kMA1AkussCYEqhQTl4D6pEssJ/2uYIc2SZryxpJqV5jiSd0ZnrvHP3CwedR+8S0l0lLRvOg2QKJQPQ+C1hUXmSOIYzAhK9h6FfrhaGJ+S/pC+SXAEvKyDkm7ubyKgFuZdAHI0lb8s2nG///shfiPk9B1cBFu5KkwaIFZeG+UQnyC82oYy7rKYiTMdgcRYK1Gu4bbfOnJBwi55P82BoHGjq+fTTkaeyAzZrMRclIcCk8HTKVBT0CVsFGjI=
