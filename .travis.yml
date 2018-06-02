@@ -20,8 +20,9 @@ dist: trusty
 #- sudo cpanm --quiet --notest App::Sqitch
 #cache: pip
 script:
-- python3 -m flake8 pipeline tests bin
+#- python3 -m flake8 pipeline tests bin
 #- python3 -m pytest -vv
+- echo HELLO
 branches:
   only:
   - master
