@@ -1,6 +1,6 @@
 language: python
 python:
-  - 3.6
+- 3.6
 dist: trusty
 sudo: true
 addons:
@@ -13,25 +13,30 @@ addons:
     - perl
     - perl-doc
 services:
-  - docker
-
+- docker
 install:
-  - source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
-  - freenome-build develop .
-  - sudo cpanm --quiet --notest App::Sqitch
+- source scripts/install_latest_stable_freenome_build.sh $ANACONDA_TOKEN
+- freenome-build develop .
+- sudo cpanm --quiet --notest App::Sqitch
 cache: pip
 script:
-  - python3 -m flake8 pipeline tests bin
-  - python3 -m pytest -vv
-branches:
-  only:
-  - master
-  - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
+- python3 -m flake8 pipeline tests bin
+- python3 -m pytest -vv
+- echo HELLO
+#branches:
+#  only:
+#  - master
+#  - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
 deploy:
-  provider: script
-  script:
-  - freenome-build deploy -u
+- provider: script
+  script: freenome-build deploy -u
   skip_cleanup: true
+  on:
+    tags: true
+- provider: pypi
+  user: nboley
+  password:
+    secure: kbHDUcCvb77ys2l4BkcNuRqoxRS6TkRby+TPrNKau1JvvRe6SXiOfAKK1a2EPLw3JqPmeeTtImfi0mNlze6ROqOuIfkrnJAFTheb1mwDGuVDdNNRHf48RGnUOLwRUyBhYmBrIdSKJVF5p5KZ5ouXYdccliEll2HL3hKW82Wi8ulxstegPJ+5GdRT8eAAI0wtroZd5Wam1z/bmhmsjAfQ66LgFAiAoodK5WwcW4QV2I0rs7zFwanOq8mqgcTGTSkscwgVsIJ/YUqw6G7rXQG7uvlMkQnuZ/Vc+F4mHeIhA8ZFnZeCZamfZzEw1IJJm6cYZRR2FI5sYicI8Lwkr3oirSd582QFV5nSinS66KzKTr8eqDMgoCGWinXGqJFANCM99AXnsQrIRK045/hJYO1lS5bWuAlsESJeRAPuvi7PKx9CFTf8yNA5rDNeDYBGF/9MiMLxlGfFbzrFrUMb7FWnXJRYDuDg31Giwi9AcgzC1U7xXsv0LiD4Xx9u7HpmN216Mu9PRiQR6czQ83JpGtX3kbBgVtjBdmOCcwZ4tOB/+5sqMLnVbTbqeGfFNnajVeO7JeoglK80Lw0pbNtKm3QW0JRMpDmUegrJx7SzpduzJxr/WqJOlStrbd7UZVqz5ljj9jJ/SQ1oLcbcVRDX/9egwb7eNrjuQCZC5PQYBT6fA48=
   on:
     tags: true
 env:

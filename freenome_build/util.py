@@ -30,7 +30,7 @@ def get_yaml_path(repo_path):
         return yaml_fpath
 
 
-def _get_gcs_blob(gcp_project, remote_prefix, remote_relative_path):
+def get_gcs_blob(gcp_project, remote_prefix, remote_relative_path):
     absolute_remote_path = remote_prefix + remote_relative_path
     res = urllib.parse.urlsplit(absolute_remote_path)
     rel_path = res.path[1:]
