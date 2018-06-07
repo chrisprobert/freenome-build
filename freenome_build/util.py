@@ -3,6 +3,9 @@ import re
 import contextlib
 import subprocess
 import logging
+import urllib
+
+from google.cloud.storage.client import Client
 
 import conda_build.api
 from conda_build.config import Config as CondaBuildConfig
@@ -25,6 +28,14 @@ def get_yaml_path(repo_path):
         raise YamlNotFoundError(f"Could not find a meta.yaml file at '{yaml_fpath}'")
     else:
         return yaml_fpath
+
+
+def get_gcs_blob(gcp_project, remote_prefix, remote_relative_path):
+    absolute_remote_path = remote_prefix + remote_relative_path
+    res = urllib.parse.urlsplit(absolute_remote_path)
+    rel_path = res.path[1:]
+    blob = Client(gcp_project).bucket(res.netloc).blob(rel_path)
+    return blob
 
 
 def run_and_log(cmd, input=None):
