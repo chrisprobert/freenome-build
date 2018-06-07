@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import contextlib
 import subprocess
@@ -41,17 +42,23 @@ def get_gcs_blob(gcp_project, remote_prefix, remote_relative_path):
 def run_and_log(cmd, input=None):
     logger.info(f"Running '{cmd}'")
 
-    proc = subprocess.run(
-        cmd, shell=True, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    proc = subprocess.Popen(
+        cmd, shell=True, stdin=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
+    stdout_tee_proc = subprocess.run(
+        ["tee", "/dev/stdout"], stdin=proc.stdout, stdout=subprocess.PIPE)
+    stderr_tee_proc = subprocess.run(
+        ["tee", "/dev/stderr"], stdin=proc.stderr, stdout=subprocess.PIPE)
 
-    if proc.stderr:
-        logger.info(f"Ran '{cmd}'\nSTDERR:\n{proc.stderr.decode().strip()}")
-    if proc.stdout:
-        logger.info(f"Ran '{cmd}'\nSTDOUT:\n{proc.stdout.decode().strip()}")
+    if stderr_tee_proc.stdout:
+        logger.info(f"Ran '{cmd}'\nSTDERR:\n{stderr_tee_proc.stdout.decode().strip()}")
+    if stdout_tee_proc.stdout:
+        logger.info(f"Ran '{cmd}'\nSTDOUT:\n{stdout_tee_proc.stdout.decode().strip()}")
 
     # raise an excpetion if the return code was non-zero
-    proc.check_returncode()
+    proc.wait()
+    if proc.returncode != 0:
+        raise RuntimeError(f"'{cmd}' returned with error code {proc.returncode}")
 
     return proc
 
