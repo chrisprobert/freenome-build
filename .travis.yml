@@ -1,4 +1,5 @@
 language: python
+sudo: true
 python:
 - 3.6
 dist: trusty
@@ -22,11 +23,10 @@ cache: pip
 script:
 - python3 -m flake8 pipeline tests bin
 - python3 -m pytest -vv
-- echo HELLO
-#branches:
-#  only:
-#  - master
-#  - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
+branches:
+  only:
+  - master
+  - "/v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(\\.(0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\\+[0-9a-zA-Z-]+(\\.[0-9a-zA-Z-]+)*)?/"
 deploy:
 - provider: script
   script: freenome-build deploy -u
