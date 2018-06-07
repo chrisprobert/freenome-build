@@ -90,7 +90,7 @@ def build_package_from_meta_yaml(path, version, skip_existing=False):
     output_file_paths = conda_build.api.build(
         [yaml_fpath, ],
         skip_existing=skip_existing,
-        config=CondaBuildConfig(anaconda_upload=False, quiet=True)
+        config=CondaBuildConfig(anaconda_upload=False, quiet=False)
     )
     if len(output_file_paths) == 0:
         raise RuntimeError('No package was built.')
