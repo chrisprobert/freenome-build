@@ -14,7 +14,11 @@ if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
 fi
 
-# enable access to freenome channel
+# setup the condarc with the correct set of channels
+conda config --remove channels defaults
+conda config --add channels https://repo.anaconda.com/pkgs/pro/
+conda config --add channels https://repo.anaconda.com/pkgs/free/
+conda config --add channels https://repo.anaconda.com/pkgs/main/
 conda config --add channels conda-forge
 conda config --add channels bioconda
 conda config --add channels https://conda.anaconda.org/t/$ANACONDA_TOKEN/freenome
