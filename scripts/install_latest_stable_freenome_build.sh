@@ -15,7 +15,7 @@ command -v conda >/dev/null 2>&1 || CONDA_INSTALLED=0
 if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     # install conda
     wget -q $MINICONDA_URL;
-    bash $(basename $MINICONDA_URL) -b -p $MINICONDA_INSTALL_PATH;
+    bash $(basename $MINICONDA_URL) -b -u -p $MINICONDA_INSTALL_PATH;
     # activate the base conda environment
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH";
 fi
