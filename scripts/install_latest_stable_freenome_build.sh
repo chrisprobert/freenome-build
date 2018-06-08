@@ -12,7 +12,7 @@ if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     mkdir -p $MINICONDA_INSTALL_PATH;
     cd $MINICONDA_INSTALL_PATH;
     wget $MINICONDA_URL;
-    bash $( basename $MINICONDA_URL ) -b -p $MINICONDA_INSTALL_PATH;
+    bash $( basename $MINICONDA_URL ) -b -u -p $MINICONDA_INSTALL_PATH;
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH";
 fi
 
