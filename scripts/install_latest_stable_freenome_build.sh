@@ -8,10 +8,12 @@ MINICONDA_INSTALL_PATH=$HOME/miniconda
 CONDA_INSTALLED=1
 command -v conda >/dev/null 2>&1 || CONDA_INSTALLED=0
 if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
-    #install conda
-    wget $MINICONDA_URL
-    bash $( basename $MINICONDA_URL ) -b -p $MINICONDA_INSTALL_PATH
-    export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
+    # install conda
+    mkdir -p $MINICONDA_INSTALL_PATH;
+    cd $MINICONDA_INSTALL_PATH;
+    wget $MINICONDA_URL;
+    bash $( basename $MINICONDA_URL ) -b -p $MINICONDA_INSTALL_PATH;
+    export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH";
 fi
 
 # setup the condarc with the correct set of channels
