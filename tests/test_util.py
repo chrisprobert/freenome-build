@@ -1,4 +1,3 @@
-import pytest
 import tempfile
 from freenome_build.util import run_and_log
 
