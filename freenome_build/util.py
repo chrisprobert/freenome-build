@@ -1,5 +1,5 @@
 import os
-import sys
+import io
 import re
 import contextlib
 import subprocess
@@ -42,18 +42,37 @@ def get_gcs_blob(gcp_project, remote_prefix, remote_relative_path):
 def run_and_log(cmd, input=None):
     logger.info(f"Running '{cmd}'")
 
+    if input is None:
+        stdin_pipe = None
+    elif isinstance(input, io.IOBase):
+        input.flush()
+        input.seek(0)
+        stdin_pipe = input
+    elif isinstance(input, bytes):
+        stdin_pipe = subprocess.PIPE
+    elif isinstance(input, str):
+        input = input.encode()
+        stdin_pipe = subprocess.PIPE
+
     proc = subprocess.Popen(
-        cmd, shell=True, stdin=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        cmd, shell=True, stdin=stdin_pipe, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
+    if stdin_pipe == subprocess.PIPE:
+        proc.stdin.write(input)
+    if proc.stdin:
+        proc.stdin.close()
+
     stdout_tee_proc = subprocess.run(
         ["tee", "/dev/stdout"], stdin=proc.stdout, stdout=subprocess.PIPE)
     stderr_tee_proc = subprocess.run(
         ["tee", "/dev/stderr"], stdin=proc.stderr, stdout=subprocess.PIPE)
 
     if stderr_tee_proc.stdout:
-        logger.info(f"Ran '{cmd}'\nSTDERR:\n{stderr_tee_proc.stdout.decode().strip()}")
+        logger.info(
+            f"Ran '{cmd}'\nSTDERR:\n{'='*80}\n{stderr_tee_proc.stdout.decode()}\n{'='*80}")
     if stdout_tee_proc.stdout:
-        logger.info(f"Ran '{cmd}'\nSTDOUT:\n{stdout_tee_proc.stdout.decode().strip()}")
+        logger.info(
+            f"Ran '{cmd}'\nSTDOUT:\n{'='*80}\n{stdout_tee_proc.stdout.decode()}\n{'='*80}")
 
     # raise an excpetion if the return code was non-zero
     proc.wait()
