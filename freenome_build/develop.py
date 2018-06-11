@@ -44,7 +44,7 @@ def setup_development_environment(path):
     local_channel = "file://" + os.path.split(os.path.split(output_file_path)[0])[0]
     run_and_log(f"conda install {package_name}=={version} --only-deps --yes -c {local_channel}")
     # python setup.py develop $PATH
-    run_and_log("python {} develop".format(norm_abs_join_path(path, "./setup.py")))
+    run_and_log("cd {path} && python setup.py develop".format(path=path))
 
 
 def add_develop_subparser(subparsers):

@@ -1,4 +1,5 @@
 import os
+import io
 import re
 import contextlib
 import subprocess
@@ -41,17 +42,42 @@ def get_gcs_blob(gcp_project, remote_prefix, remote_relative_path):
 def run_and_log(cmd, input=None):
     logger.info(f"Running '{cmd}'")
 
-    proc = subprocess.run(
-        cmd, shell=True, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+    if input is None:
+        stdin_pipe = None
+    elif isinstance(input, io.IOBase):
+        input.flush()
+        input.seek(0)
+        stdin_pipe = input
+    elif isinstance(input, bytes):
+        stdin_pipe = subprocess.PIPE
+    elif isinstance(input, str):
+        input = input.encode()
+        stdin_pipe = subprocess.PIPE
 
-    if proc.stderr:
-        logger.info(f"Ran '{cmd}'\nSTDERR:\n{proc.stderr.decode().strip()}")
-    if proc.stdout:
-        logger.info(f"Ran '{cmd}'\nSTDOUT:\n{proc.stdout.decode().strip()}")
+    proc = subprocess.Popen(
+        cmd, shell=True, stdin=stdin_pipe, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+    if stdin_pipe == subprocess.PIPE:
+        proc.stdin.write(input)
+    if proc.stdin:
+        proc.stdin.close()
+
+    stdout_tee_proc = subprocess.run(
+        ["tee", "/dev/stdout"], stdin=proc.stdout, stdout=subprocess.PIPE)
+    stderr_tee_proc = subprocess.run(
+        ["tee", "/dev/stderr"], stdin=proc.stderr, stdout=subprocess.PIPE)
+
+    if stderr_tee_proc.stdout:
+        logger.info(
+            f"Ran '{cmd}'\nSTDERR:\n{'='*80}\n{stderr_tee_proc.stdout.decode()}\n{'='*80}")
+    if stdout_tee_proc.stdout:
+        logger.info(
+            f"Ran '{cmd}'\nSTDOUT:\n{'='*80}\n{stdout_tee_proc.stdout.decode()}\n{'='*80}")
 
     # raise an excpetion if the return code was non-zero
-    proc.check_returncode()
+    proc.wait()
+    if proc.returncode != 0:
+        raise RuntimeError(f"'{cmd}' returned with error code {proc.returncode}")
 
     return proc
 
@@ -90,7 +116,7 @@ def build_package_from_meta_yaml(path, version, skip_existing=False):
     output_file_paths = conda_build.api.build(
         [yaml_fpath, ],
         skip_existing=skip_existing,
-        config=CondaBuildConfig(anaconda_upload=False, quiet=True)
+        config=CondaBuildConfig(anaconda_upload=False, quiet=False)
     )
     if len(output_file_paths) == 0:
         raise RuntimeError('No package was built.')
