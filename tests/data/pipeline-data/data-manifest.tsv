@@ -1,2 +1,3 @@
-variable_name   local_path (relative)	remote_path (absolute)	md5sum	size	notes
-chrM	hg38/hg38.chrom.interval.chrM.bed.gz	hg38/hg38.chrom.interval.chrM.bed.gz	V3ThYH7aXwtGMdEvYCOmRQ==	79	#old path: /home/yaping/data/intervals/hg38.chrom.interval.chrM.bed.gz
+variable_name	local_relpath	remote_relpath	crc32	size	notes
+eight_as	eight_As.fa	eight_As.v1.fa	79b71c0a8	8	eight A's in a fasta
+eight_cs	eight_Cs.fa	eight_Cs.v1.fa	eeb0e77e	8	eight C's in a fasta

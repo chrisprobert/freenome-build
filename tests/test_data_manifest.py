@@ -3,11 +3,10 @@ import tempfile
 import shutil
 
 from freenome_build.util import get_gcs_blob
-from freenome_build.data_manifest import DataManifest
+from freenome_build.data_manifest import DataManifestReader, DataManifestWriter
 
 
-DEFAULT_GCP_PROJECT = 'freenome-computational'
-DEFAULT_LOCAL_PREFIX = '/srv/reference_data/'
+DEFAULT_PROJECT = 'Freenome Computational'
 DEFAULT_REMOTE_PREFIX = 'gs://balrog/reference-data/'
 
 
@@ -19,59 +18,56 @@ def _add_base_to_path(rel_path):
     return os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), rel_path))
 
 
-LOCAL_TEST_DATA_PREFIX = "PLACEHOLDER FOR FLAKE8 BUT NEEDS TO BE FIXED"
-
 TEST_MANIFEST_FNAME = _add_base_to_path('../tests/data/pipeline-data/data-manifest.tsv')
-TEST_DATA_FILE = _add_base_to_path('../tests/data/pipeline-data/eight_As.fa')
-
-TEST_LOCAL_RELATIVE_PATH = 'eight_As.fa'
-TEST_REMOTE_RELATIVE_PATH = 'eight_As.fa'
-TEST_REMOTE_PATH = DEFAULT_REMOTE_PREFIX + TEST_REMOTE_RELATIVE_PATH
-
-TEST_DATA_FILE_2 = os.path.normpath(os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    '../tests/data/pipeline-data/hg38.chrom.interval.chrM.bed.gz')
-)
-TEST_2_LOCAL_RELATIVE_PATH = './hg38/hg38.chrom.interval.chrM.bed.gz'
+TEST_FILE_PATHS_IN_MANIFEST = {
+    'eight_as': _add_base_to_path('../tests/data/pipeline-data/eight_As.fa'),
+    'eight_cs': _add_base_to_path('../tests/data/pipeline-data/eight_Cs.fa')
+}
+TEST_FILE_PATHS_NOT_IN_MANIFEST = {
+    'twelve_cs': _add_base_to_path('../tests/data/pipeline-data/twelve_Cs.fa'),
+}
 
 
 def reset_test_manifest():
     shutil.copy(TEST_MANIFEST_FNAME+".orig", TEST_MANIFEST_FNAME)
 
 
-def _add_file_to_manifest_upload_to_gcs_and_verify_local_matches_remote():
+def _add_file_to_manifest_upload_to_gcs_and_verify_local_matches_remote(manifest_fname):
     """Test that adding a file to the manifest works.
 
     This is called by the more specific test below.
     """
-    # TODO - revert these to static global variables
-    manifest_fname = TEST_MANIFEST_FNAME
-    remote_prefix = DEFAULT_REMOTE_PREFIX
-    test_data_fname = TEST_DATA_FILE
-    local_relative_path = TEST_LOCAL_RELATIVE_PATH
-    remote_relative_path = TEST_REMOTE_RELATIVE_PATH
-    try:
-        print(f"Loading manifest: {manifest_fname}")
-        manifest = DataManifestWriter(manifest_fname, remote_prefix=remote_prefix)
-        manifest.add_file('eight_As', test_data_fname, local_relative_path, remote_relative_path)
+    remote_base_path = DEFAULT_REMOTE_PREFIX
 
-        # read the local data file into a string
-        # we use this below to ensure that it exists
-        print(f"Reading local file: {test_data_fname}")
-        with open(test_data_fname, 'rb') as ifp:
-            local_data = ifp.read()
+    nf_key = 'twelve_cs'
+    nf_path = TEST_FILE_PATHS_NOT_IN_MANIFEST[nf_key]
+    nf_local_rel_path = nf_key
+    nf_remote_rel_path = nf_key
 
-        # check that the file exists in GCS and is the same as the local file
-        print(f"Downloading remote file: {DEFAULT_REMOTE_PREFIX}{TEST_REMOTE_RELATIVE_PATH}")
-        blob = get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH)
-        gcs_data = blob.download_as_string()
-        assert local_data == gcs_data, f"local data: {local_data}\ngcs data: {gcs_data}"
-    finally:
-        print(f"Reseting manifest: {manifest_fname}")
-        reset_test_manifest()
-        print(f"Deleting remote file ({DEFAULT_REMOTE_PREFIX}{TEST_REMOTE_RELATIVE_PATH})")
-        blob = get_gcs_blob(DEFAULT_REMOTE_PREFIX, TEST_REMOTE_RELATIVE_PATH)
-        blob.delete()
+    with tempfile.TemporaryDirectory() as local_base_path:
+        remote_path = DEFAULT_REMOTE_PREFIX + nf_remote_rel_path
+        try:
+            print(f"Loading manifest: {manifest_fname}")
+            manifest = DataManifestWriter(manifest_fname, remote_base_path, local_base_path)
+            manifest.add_file(nf_key, nf_path, nf_local_rel_path, nf_remote_rel_path)
+
+            # read the local data file into a string
+            # we use this below to ensure that it exists
+            print(f"Reading local file: {nf_path}")
+            with open(nf_path, 'rb') as ifp:
+                local_data = ifp.read()
+
+            # check that the file exists in GCS and is the same as the local file
+            print(f"Downloading remote file: {remote_path}")
+            blob = get_gcs_blob(DEFAULT_PROJECT, DEFAULT_REMOTE_PREFIX, nf_remote_rel_path)
+            gcs_data = blob.download_as_string()
+            assert local_data == gcs_data, f"local data: {local_data}\ngcs data: {gcs_data}"
+        finally:
+            print(f"Reseting manifest: {manifest_fname}")
+            reset_test_manifest()
+            print(f"Deleting remote file ({remote_path})")
+            blob = get_gcs_blob(DEFAULT_PROJECT, DEFAULT_REMOTE_PREFIX, nf_remote_rel_path)
+            blob.delete()
 
 
 def test_add_duplicate_key():
