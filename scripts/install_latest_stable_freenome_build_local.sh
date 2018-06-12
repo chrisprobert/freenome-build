@@ -68,7 +68,6 @@ else
     read -p "$RC_PROMPT" -r RC_PATH
 fi
 
-
 # Expand directory shorthands
 eval RC_PATH=$RC_PATH
 if [ -z $RC_PATH ]; then
