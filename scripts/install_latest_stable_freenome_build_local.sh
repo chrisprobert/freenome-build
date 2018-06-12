@@ -70,6 +70,7 @@ fi
 
 # Expand directory shorthands
 eval RC_PATH=$RC_PATH
+
 if [ -z $RC_PATH ]; then
     echo 'Since you have opted out of adding conda to PATH on shell startup, you will have to run this script each time you wish to use Conda in a shell'
 else
