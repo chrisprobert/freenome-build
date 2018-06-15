@@ -21,7 +21,7 @@ if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
 fi
 
 # setup the condarc with the correct set of channels
-conda config --remove channels defaults
+conda config --remove channels defaults || true
 conda config --add channels https://repo.anaconda.com/pkgs/pro/
 conda config --add channels https://repo.anaconda.com/pkgs/free/
 conda config --add channels https://repo.anaconda.com/pkgs/main/
