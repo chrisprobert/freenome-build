@@ -3,7 +3,14 @@
 set -e
 
 ANACONDA_TOKEN=$1
-MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+if [ $(uname) = 'Linux' ]; then
+    MINICONDA_URL='https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh'
+elif [ $(uname) = 'Darwin' ]; then
+    MINICONDA_URL='https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh'
+else
+    echo "We do not support $(uname) architecture at this time"
+    exit 1
+fi
 MINICONDA_INSTALL_PATH=$HOME/miniconda
 
 mkdir -p $MINICONDA_INSTALL_PATH;
@@ -14,7 +21,7 @@ CONDA_INSTALLED=1
 command -v conda >/dev/null 2>&1 || CONDA_INSTALLED=0
 if [[ $ANACONDA_INSTALLED -eq 0 ]]; then
     # install conda
-    wget -q $MINICONDA_URL;
+    curl -sO $MINICONDA_URL;
     bash $(basename $MINICONDA_URL) -b -u -p $MINICONDA_INSTALL_PATH;
     # activate the base conda environment
     export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH";

@@ -1,7 +1,10 @@
 language: python
 sudo: true
+os:
+  - linux
+  - osx
 python:
-- 3.6
+  - 3.6
 dist: trusty
 sudo: true
 addons:
